@@ -1477,7 +1477,7 @@ class CodeViewTab(QWidget):
 
 
 class BackupTab(QWidget):
-    """Simplified backup management - backup selector only."""
+    """Clean, intuitive backup management - completely rebuilt UI."""
 
     def __init__(self, config_manager):
         super().__init__()
@@ -1486,57 +1486,79 @@ class BackupTab(QWidget):
         self.refresh_backups()
 
     def setup_ui(self):
-        # Main layout - tight spacing
+        # Main layout with proper spacing
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(4, 4, 4, 4)
-        layout.setSpacing(4)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(8)
 
-        # Create backup section
-        create_widget = QWidget()
-        create_widget.setFixedHeight(36)
-        create_widget.setStyleSheet("""
-            QWidget {
+        # Header section
+        header = QLabel("💾 Backup Management")
+        header.setStyleSheet("""
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 8px;
+            padding: 8px;
+            background-color: #2a2a2a;
+            border-radius: 4px;
+            border: 1px solid #444;
+        """)
+        layout.addWidget(header)
+
+        # Create new backup section
+        create_section = QGroupBox("Create New Backup")
+        create_section.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                color: #ffffff;
+                border: 2px solid #4a90e2;
+                border-radius: 6px;
+                margin-top: 8px;
+                padding-top: 8px;
                 background-color: #2a2a2a;
-                border: 1px solid #444;
-                border-radius: 3px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 8px;
+                padding: 0 4px 0 4px;
+                font-size: 14px;
             }
         """)
-        create_layout = QHBoxLayout(create_widget)
-        create_layout.setContentsMargins(4, 2, 4, 2)
-        create_layout.setSpacing(4)
+        
+        create_layout = QHBoxLayout(create_section)
+        create_layout.setContentsMargins(12, 8, 12, 8)
+        create_layout.setSpacing(8)
 
         # Backup name input
         self.backup_name_input = QLineEdit()
-        self.backup_name_input.setPlaceholderText("Backup name (optional)")
-        self.backup_name_input.setFixedHeight(24)
+        self.backup_name_input.setPlaceholderText("Enter backup name (optional)")
         self.backup_name_input.setStyleSheet("""
             QLineEdit {
                 background-color: #444;
                 color: white;
                 border: 1px solid #666;
-                padding: 2px 4px;
-                border-radius: 2px;
-                font-size: 11px;
+                padding: 6px 8px;
+                border-radius: 4px;
+                font-size: 12px;
             }
             QLineEdit:focus {
                 border-color: #4a90e2;
             }
         """)
-        create_layout.addWidget(QLabel("Create:"))
+        create_layout.addWidget(QLabel("Name:"))
         create_layout.addWidget(self.backup_name_input)
 
         # Create button
-        self.create_backup_btn = QPushButton("Create")
-        self.create_backup_btn.setFixedHeight(24)
+        self.create_backup_btn = QPushButton("Create Backup")
         self.create_backup_btn.setStyleSheet("""
             QPushButton {
                 background-color: #4a90e2;
                 color: white;
                 border: none;
-                padding: 2px 6px;
-                border-radius: 2px;
+                padding: 6px 12px;
+                border-radius: 4px;
                 font-weight: bold;
-                font-size: 11px;
+                font-size: 12px;
             }
             QPushButton:hover {
                 background-color: #357abd;
@@ -1545,97 +1567,49 @@ class BackupTab(QWidget):
         self.create_backup_btn.clicked.connect(self.create_backup)
         create_layout.addWidget(self.create_backup_btn)
 
-        # Refresh button
-        self.refresh_btn = QPushButton("Refresh")
-        self.refresh_btn.setFixedHeight(24)
-        self.refresh_btn.setStyleSheet("""
-            QPushButton {
-                background-color: #666;
-                color: white;
-                border: none;
-                padding: 2px 6px;
-                border-radius: 2px;
+        layout.addWidget(create_section)
+
+        # Available backups section
+        backups_section = QGroupBox("Available Backups")
+        backups_section.setStyleSheet("""
+            QGroupBox {
                 font-weight: bold;
-                font-size: 11px;
+                color: #ffffff;
+                border: 2px solid #2e7d32;
+                border-radius: 6px;
+                margin-top: 8px;
+                padding-top: 8px;
+                background-color: #2a2a2a;
             }
-            QPushButton:hover {
-                background-color: #555;
-            }
-        """)
-        self.refresh_btn.clicked.connect(self.refresh_backups)
-        create_layout.addWidget(self.refresh_btn)
-
-        layout.addWidget(create_widget)
-
-        # Most recent backup info
-        recent_widget = QWidget()
-        recent_widget.setFixedHeight(32)
-        recent_widget.setStyleSheet("""
-            QWidget {
-                background-color: #1a4d1a;
-                border: 1px solid #2e7d32;
-                border-radius: 3px;
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 8px;
+                padding: 0 4px 0 4px;
+                font-size: 14px;
             }
         """)
-        recent_layout = QHBoxLayout(recent_widget)
-        recent_layout.setContentsMargins(4, 2, 4, 2)
-        recent_layout.setSpacing(4)
+        
+        backups_layout = QVBoxLayout(backups_section)
+        backups_layout.setContentsMargins(12, 8, 12, 8)
+        backups_layout.setSpacing(8)
 
-        # Recent backup info
-        self.recent_backup_label = QLabel("No recent backup")
-        self.recent_backup_label.setStyleSheet("""
-            color: #cccccc;
-            font-size: 11px;
-        """)
-        recent_layout.addWidget(self.recent_backup_label)
-
-        recent_layout.addStretch()
-
-        # Quick restore button
-        self.quick_restore_btn = QPushButton("Restore Most Recent")
-        self.quick_restore_btn.setFixedHeight(24)
-        self.quick_restore_btn.setStyleSheet("""
-            QPushButton {
-                background-color: #2e7d32;
-                color: white;
-                border: none;
-                padding: 2px 6px;
-                border-radius: 2px;
-                font-weight: bold;
-                font-size: 11px;
-            }
-            QPushButton:hover {
-                background-color: #1b5e20;
-            }
-            QPushButton:disabled {
-                background-color: #666;
-                color: #999;
-            }
-        """)
-        self.quick_restore_btn.clicked.connect(self.restore_most_recent)
-        self.quick_restore_btn.setEnabled(False)
-        recent_layout.addWidget(self.quick_restore_btn)
-
-        layout.addWidget(recent_widget)
-
-        # Backup list - simplified
+        # Backup list with proper styling
         self.backup_list = QListWidget()
-        self.backup_list.setFixedHeight(280)
         self.backup_list.setStyleSheet("""
             QListWidget {
                 background-color: #333;
                 color: white;
                 border: 1px solid #555;
-                border-radius: 3px;
-                padding: 1px;
+                border-radius: 4px;
+                padding: 4px;
                 font-family: 'Consolas', 'Monaco', monospace;
-                font-size: 10px;
+                font-size: 11px;
             }
             QListWidget::item {
-                padding: 3px;
+                padding: 8px;
                 border-bottom: 1px solid #444;
-                border-radius: 1px;
-                margin: 0px;
+                border-radius: 2px;
+                margin: 1px;
             }
             QListWidget::item:selected {
                 background-color: #4a90e2;
@@ -1645,34 +1619,23 @@ class BackupTab(QWidget):
                 background-color: #444;
             }
         """)
-        layout.addWidget(self.backup_list)
+        backups_layout.addWidget(self.backup_list)
 
         # Action buttons
-        button_widget = QWidget()
-        button_widget.setFixedHeight(36)
-        button_widget.setStyleSheet("""
-            QWidget {
-                background-color: #2a2a2a;
-                border: 1px solid #444;
-                border-radius: 3px;
-            }
-        """)
-        button_layout = QHBoxLayout(button_widget)
-        button_layout.setContentsMargins(4, 2, 4, 2)
-        button_layout.setSpacing(4)
+        action_layout = QHBoxLayout()
+        action_layout.setSpacing(8)
 
-        # Restore selected
+        # Restore selected button
         self.restore_btn = QPushButton("Restore Selected")
-        self.restore_btn.setFixedHeight(24)
         self.restore_btn.setStyleSheet("""
             QPushButton {
                 background-color: #2e7d32;
                 color: white;
                 border: none;
-                padding: 2px 6px;
-                border-radius: 2px;
+                padding: 8px 16px;
+                border-radius: 4px;
                 font-weight: bold;
-                font-size: 11px;
+                font-size: 12px;
             }
             QPushButton:hover {
                 background-color: #1b5e20;
@@ -1684,20 +1647,19 @@ class BackupTab(QWidget):
         """)
         self.restore_btn.clicked.connect(self.restore_selected_backup)
         self.restore_btn.setEnabled(False)
-        button_layout.addWidget(self.restore_btn)
+        action_layout.addWidget(self.restore_btn)
 
-        # Delete selected
+        # Delete selected button
         self.delete_btn = QPushButton("Delete Selected")
-        self.delete_btn.setFixedHeight(24)
         self.delete_btn.setStyleSheet("""
             QPushButton {
                 background-color: #d32f2f;
                 color: white;
                 border: none;
-                padding: 2px 6px;
-                border-radius: 2px;
+                padding: 8px 16px;
+                border-radius: 4px;
                 font-weight: bold;
-                font-size: 11px;
+                font-size: 12px;
             }
             QPushButton:hover {
                 background-color: #b71c1c;
@@ -1709,9 +1671,48 @@ class BackupTab(QWidget):
         """)
         self.delete_btn.clicked.connect(self.delete_selected_backup)
         self.delete_btn.setEnabled(False)
-        button_layout.addWidget(self.delete_btn)
+        action_layout.addWidget(self.delete_btn)
 
-        layout.addWidget(button_widget)
+        # Open backup folder button
+        self.open_folder_btn = QPushButton("Open Backup Folder")
+        self.open_folder_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #666;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 12px;
+            }
+            QPushButton:hover {
+                background-color: #555;
+            }
+        """)
+        self.open_folder_btn.clicked.connect(self.open_backup_folder)
+        action_layout.addWidget(self.open_folder_btn)
+
+        # Refresh button
+        self.refresh_btn = QPushButton("Refresh")
+        self.refresh_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #666;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 12px;
+            }
+            QPushButton:hover {
+                background-color: #555;
+            }
+        """)
+        self.refresh_btn.clicked.connect(self.refresh_backups)
+        action_layout.addWidget(self.refresh_btn)
+
+        backups_layout.addLayout(action_layout)
+        layout.addWidget(backups_section)
 
         # Connect signals
         self.backup_list.itemSelectionChanged.connect(self.update_backup_buttons)
@@ -1722,120 +1723,54 @@ class BackupTab(QWidget):
         self.refresh_backups()
     
     def refresh_backups(self):
-        """Refresh the backup list and update recent backup display."""
+        """Refresh the backup list with clean, simple display."""
         self.backup_list.clear()
         
         # Ensure backup directory exists
         self.config_manager.BACKUP_DIR.mkdir(parents=True, exist_ok=True)
         
         if not self.config_manager.BACKUP_DIR.exists():
-            self.recent_backup_label.setText("No backup directory found")
-            self.quick_restore_btn.setEnabled(False)
             return
         
         backup_files = list(self.config_manager.BACKUP_DIR.glob("*.bak"))
         backup_files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
         
-        # Debug logging
-        log_info(f"Found {len(backup_files)} backup files in {self.config_manager.BACKUP_DIR}", "BACKUP")
-        
-        # Update recent backup display
-        if backup_files:
-            most_recent = backup_files[0]
-            file_size = most_recent.stat().st_size
-            
-            # Get file modification time with proper timezone handling
-            file_mtime = most_recent.stat().st_mtime
-            file_time = datetime.fromtimestamp(file_mtime)
-            time_str = file_time.strftime("%Y-%m-%d %H:%M:%S")
-            
-            # Debug logging
-            log_info(f"Most recent backup: {most_recent.name}, mtime: {file_mtime}, formatted: {time_str}", "BACKUP")
-            
-            self.recent_backup_label.setText(f"📁 {most_recent.name}\n📅 {time_str}\n📊 {file_size:,} bytes")
-            self.quick_restore_btn.setEnabled(True)
-        else:
-            self.recent_backup_label.setText("No recent backup found")
-            self.quick_restore_btn.setEnabled(False)
-        
-        # Populate backup list
+        # Populate backup list with clean format
         for backup_file in backup_files:
             try:
-                # Get file modification time
+                # Get file info
                 file_mtime = backup_file.stat().st_mtime
                 timestamp = datetime.fromtimestamp(file_mtime)
                 size = backup_file.stat().st_size
                 
-                # Format file size
-                if size < 1024:
-                    size_str = f"{size} B"
-                elif size < 1024 * 1024:
-                    size_str = f"{size / 1024:.1f} KB"
-                else:
-                    size_str = f"{size / (1024 * 1024):.1f} MB"
+                # Format display text
+                time_str = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+                size_str = f"{size:,} bytes"
+                display_text = f"{backup_file.name} | {time_str} | {size_str}"
                 
-                # Create a more readable display with proper time formatting
-                time_display = timestamp.strftime('%Y-%m-%d at %H:%M:%S')
-                item_text = f"📁 {backup_file.name}\n🕒 {time_display} • 📊 {size_str}"
-                
-                # Debug logging for each file
-                log_info(f"Backup file: {backup_file.name}, mtime: {file_mtime}, formatted: {time_display}", "BACKUP")
-                
-                item = QListWidgetItem(item_text)
+                # Create list item
+                item = QListWidgetItem(display_text)
                 item.setData(Qt.ItemDataRole.UserRole, backup_file)
                 self.backup_list.addItem(item)
+                
             except Exception as e:
-                log_error(f"Error processing backup file {backup_file}: {e}", "BACKUP", e)
+                log_error(f"Error processing backup file {backup_file}: {str(e)}", "BACKUP", e)
+                continue
     
     def create_backup(self):
-        """Create a new backup."""
+        """Create a new backup with clean feedback."""
         backup_name = self.backup_name_input.text().strip()
         
-        # Log current system time for debugging
-        current_time = datetime.now()
-        log_info(f"Creating backup at system time: {current_time.strftime('%Y-%m-%d %H:%M:%S')}", "BACKUP")
-        
-        if self.config_manager._create_backup(backup_name if backup_name else None):
-            QMessageBox.information(self, "Backup Created", "✅ Backup created successfully!")
-            self.backup_name_input.clear()
-            self.refresh_backups()
-        else:
-            QMessageBox.warning(self, "Backup Failed", "❌ Failed to create backup!")
-    
-    def restore_most_recent(self):
-        """Restore the most recent backup."""
-        backup_files = list(self.config_manager.BACKUP_DIR.glob("*.bak"))
-        if not backup_files:
-            QMessageBox.warning(self, "No Backups", "❌ No backups found!")
-            return
-        
-        most_recent = max(backup_files, key=lambda x: x.stat().st_mtime)
-        
-        reply = QMessageBox.question(
-            self, 
-            "Restore Most Recent Backup",
-            f"🔄 Are you sure you want to restore the most recent backup?\n\n"
-            f"📁 File: {most_recent.name}\n"
-            f"📅 Date: {datetime.fromtimestamp(most_recent.stat().st_mtime).strftime('%Y-%m-%d %H:%M:%S')}\n\n"
-            f"⚠️ This will overwrite your current settings!\n"
-            f"💾 A backup of your current settings will be created first.",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No
-        )
-        
-        if reply == QMessageBox.StandardButton.Yes:
-            try:
-                # Create backup of current settings first
-                self.config_manager._create_backup("Before_Restore")
-                
-                # Restore the backup
-                import shutil
-                shutil.copy2(most_recent, self.config_manager.config_path)
-                
-                QMessageBox.information(self, "Backup Restored", "✅ Most recent backup restored successfully!")
+        try:
+            success = self.config_manager._create_backup(backup_name if backup_name else None)
+            if success:
+                QMessageBox.information(self, "Backup Created", "✅ Backup created successfully!")
+                self.backup_name_input.clear()
                 self.refresh_backups()
-            except Exception as e:
-                QMessageBox.critical(self, "Restore Failed", f"❌ Failed to restore backup: {str(e)}")
+            else:
+                QMessageBox.warning(self, "Backup Failed", "❌ Failed to create backup!")
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"❌ Error creating backup: {str(e)}")
     
     def restore_selected_backup(self):
         """Restore the selected backup."""
@@ -1853,8 +1788,7 @@ class BackupTab(QWidget):
             self, 
             "Restore Backup",
             f"🔄 Are you sure you want to restore this backup?\n\n"
-            f"📁 File: {backup_file.name}\n"
-            f"📅 Date: {current_item.text()}\n\n"
+            f"📁 File: {backup_file.name}\n\n"
             f"⚠️ This will overwrite your current settings!\n"
             f"💾 A backup of your current settings will be created first.",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
@@ -1916,30 +1850,11 @@ class BackupTab(QWidget):
         except Exception as e:
             QMessageBox.warning(self, "Error", f"❌ Failed to open backup folder: {str(e)}")
     
-    def open_selected_backup(self):
-        """Open the selected backup file in file explorer."""
-        current_item = self.backup_list.currentItem()
-        if not current_item:
-            QMessageBox.warning(self, "No Selection", "❌ Please select a backup to open!")
-            return
-        
-        backup_file = current_item.data(Qt.ItemDataRole.UserRole)
-        if not backup_file or not backup_file.exists():
-            QMessageBox.warning(self, "Error", "❌ Selected backup file not found!")
-            return
-        
-        try:
-            import subprocess
-            subprocess.run(f'explorer /select,"{backup_file}"', shell=True, check=False)
-        except Exception as e:
-            QMessageBox.warning(self, "Error", f"❌ Failed to open backup file: {str(e)}")
-    
     def update_backup_buttons(self):
         """Update backup action buttons based on selection."""
         has_selection = self.backup_list.currentItem() is not None
         self.restore_btn.setEnabled(has_selection)
         self.delete_btn.setEnabled(has_selection)
-        self.open_backup_btn.setEnabled(has_selection)
 class DebugTab(QWidget):
     """Debug tab for real-time log viewing."""
     
