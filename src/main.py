@@ -2135,18 +2135,38 @@ class MainWindow(QMainWindow):
         header_layout.setContentsMargins(16, 12, 16, 12)
         header_layout.setSpacing(16)
         
-        # Logo and title with proper branding
+        # Integrated logo and title branding
+        branding_widget = QWidget()
+        branding_widget.setStyleSheet("""
+            QWidget {
+                background: transparent;
+                border: none;
+                padding: 0px;
+                margin: 0px;
+            }
+        """)
+        branding_layout = QHBoxLayout(branding_widget)
+        branding_layout.setContentsMargins(0, 0, 0, 0)
+        branding_layout.setSpacing(8)  # Small gap between logo and text
+        
+        # Logo
         logo_label = QLabel()
-        logo_label.setPixmap(QPixmap("assets/logo.png").scaled(40, 40, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
+        logo_pixmap = QPixmap("assets/logo.png")
+        if not logo_pixmap.isNull():
+            logo_label.setPixmap(logo_pixmap.scaled(32, 32, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
+        else:
+            # Fallback if logo not found
+            logo_label.setText("🎮")
+            logo_label.setStyleSheet("font-size: 24px;")
         logo_label.setStyleSheet("""
             background: transparent;
             border: none;
             padding: 0px;
             margin: 0px;
         """)
-        header_layout.addWidget(logo_label)
+        branding_layout.addWidget(logo_label)
         
-        # Title with proper branding
+        # Title
         title_label = QLabel("FieldTuner")
         title_label.setStyleSheet("""
             font-size: 28px; 
@@ -2157,7 +2177,10 @@ class MainWindow(QMainWindow):
             padding: 0px;
             margin: 0px;
         """)
-        header_layout.addWidget(title_label)
+        branding_layout.addWidget(title_label)
+        
+        # Add the integrated branding widget to header
+        header_layout.addWidget(branding_widget)
         
         # Creator note (bigger and more prominent)
         creator_label = QLabel("💝 Created by Tom with Love from Cursor")
@@ -3115,19 +3138,38 @@ class AdvancedTab(QWidget):
         
         # Setting name and description
         info_layout = QVBoxLayout()
+        info_layout.setSpacing(4)  # Add spacing between name and description
         
-        name_label = QLabel(setting_data.get("name", setting_key))
+        # Get setting name and description
+        setting_name = setting_data.get("name", setting_key)
+        setting_desc = setting_data.get("description", "")
+        
+        # Debug: Log setting info
+        log_debug(f"Creating setting widget: {setting_key} -> {setting_name} | {setting_desc}", "ADVANCED")
+        
+        # Name label with better visibility
+        name_label = QLabel(setting_name)
         name_label.setStyleSheet("""
             font-weight: bold;
             color: #ffffff;
             font-size: 14px;
+            background: transparent;
+            border: none;
+            padding: 0px;
+            margin: 0px;
         """)
+        name_label.setWordWrap(True)
         info_layout.addWidget(name_label)
         
-        desc_label = QLabel(setting_data.get("description", ""))
+        # Description label with better visibility
+        desc_label = QLabel(setting_desc)
         desc_label.setStyleSheet("""
             color: #cccccc;
             font-size: 12px;
+            background: transparent;
+            border: none;
+            padding: 0px;
+            margin: 0px;
         """)
         desc_label.setWordWrap(True)
         info_layout.addWidget(desc_label)
