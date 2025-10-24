@@ -2912,7 +2912,13 @@ class AdvancedTab(QWidget):
         if setting_type == "bool":
             # Toggle switch for boolean values
             toggle = ProfessionalToggleSwitch()
+            
+            # Block signals during initialization
+            toggle.blockSignals(True)
             toggle.set_checked(bool(current_value) if current_value is not None else setting_data.get("default", False))
+            toggle.blockSignals(False)
+            
+            # Connect signal AFTER initialization
             toggle.toggled.connect(lambda checked, key=setting_key: self.update_setting(key, int(checked)))
             
             # Tooltip
@@ -2926,11 +2932,17 @@ class AdvancedTab(QWidget):
             # SpinBox for integer values
             spinbox = QSpinBox()
             spinbox.setRange(*setting_data.get("range", [0, 100]))
+            
+            # Block signals during initialization
+            spinbox.blockSignals(True)
             try:
                 value = int(current_value) if current_value and str(current_value).strip() else setting_data.get("default", 0)
             except (ValueError, TypeError):
                 value = setting_data.get("default", 0)
             spinbox.setValue(value)
+            spinbox.blockSignals(False)
+            
+            # Connect signal AFTER initialization
             spinbox.valueChanged.connect(lambda value, key=setting_key: self.update_setting(key, value))
             spinbox.setStyleSheet("""
                 QSpinBox {
@@ -2956,12 +2968,18 @@ class AdvancedTab(QWidget):
             # DoubleSpinBox for float values
             spinbox = QDoubleSpinBox()
             spinbox.setRange(*setting_data.get("range", [0.0, 100.0]))
+            
+            # Block signals during initialization
+            spinbox.blockSignals(True)
             try:
                 value = float(current_value) if current_value and str(current_value).strip() else setting_data.get("default", 0.0)
             except (ValueError, TypeError):
                 value = setting_data.get("default", 0.0)
             spinbox.setValue(value)
             spinbox.setDecimals(2)
+            spinbox.blockSignals(False)
+            
+            # Connect signal AFTER initialization
             spinbox.valueChanged.connect(lambda value, key=setting_key: self.update_setting(key, value))
             spinbox.setStyleSheet("""
                 QDoubleSpinBox {
@@ -2986,8 +3004,14 @@ class AdvancedTab(QWidget):
         else:
             # Text input for string values
             line_edit = QLineEdit()
+            
+            # Block signals during initialization
+            line_edit.blockSignals(True)
             line_edit.setText(str(current_value) if current_value is not None else str(setting_data.get("default", "")))
-            line_edit.textChanged.connect(lambda text, key=setting_key: self.update_setting(key, text))
+            line_edit.blockSignals(False)
+            
+            # Use editingFinished instead of textChanged for intentional changes only
+            line_edit.editingFinished.connect(lambda key=setting_key: self.update_setting(key, line_edit.text()))
             line_edit.setStyleSheet("""
                 QLineEdit {
                     background-color: #444;
@@ -3543,7 +3567,11 @@ class InputTab(QWidget):
         
         slider = QSlider(Qt.Orientation.Horizontal)
         slider.setRange(int(min_val * 100), int(max_val * 100))
+        
+        # Block signals during initialization
+        slider.blockSignals(True)
         slider.setValue(int(self.config_manager.get_setting(key, min_val) * 100))
+        slider.blockSignals(False)
         slider.setStyleSheet("""
             QSlider::groove:horizontal {
                 background: #555;
@@ -3626,7 +3654,13 @@ class InputTab(QWidget):
         
         # Toggle switch
         toggle = ProfessionalToggleSwitch()
+        
+        # Block signals during initialization
+        toggle.blockSignals(True)
         toggle.set_checked(bool(self.config_manager.get_setting(key, False)))
+        toggle.blockSignals(False)
+        
+        # Connect signal AFTER initialization
         toggle.toggled.connect(lambda checked: self.update_setting(key, int(checked)))
         
         layout.addWidget(toggle)
@@ -3700,12 +3734,16 @@ class InputTab(QWidget):
             }
         """)
         
+        # Block signals during initialization
+        combo.blockSignals(True)
         current_value = self.config_manager.get_setting(key, options[0])
         if current_value in options:
             combo.setCurrentText(current_value)
         else:
             combo.setCurrentIndex(0)
+        combo.blockSignals(False)
         
+        # Connect signal AFTER initialization
         combo.currentTextChanged.connect(lambda text: self.update_setting(key, text))
         layout.addWidget(combo)
         
