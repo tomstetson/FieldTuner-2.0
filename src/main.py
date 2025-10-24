@@ -3020,57 +3020,29 @@ class AdvancedTab(QWidget):
             if not settings:
                 continue
                 
-            # Category header - more compact, especially for single settings
-            is_single_setting = len(settings) == 1
+            # Category header with consistent, readable styling
             category_group = QGroupBox(f"📁 {category_name} ({len(settings)} settings)")
-            
-            # Better styling for readability
-            if is_single_setting:
-                category_group.setStyleSheet("""
-                    QGroupBox {
-                        font-weight: bold;
-                        color: #ffffff;
-                        border: 1px solid #4a90e2;
-                        border-radius: 6px;
-                        margin-top: 4px;
-                        padding-top: 8px;
-                        background-color: #2a2a2a;
-                        max-height: 120px;
-                    }
-                    QGroupBox::title {
-                        subcontrol-origin: margin;
-                        left: 8px;
-                        padding: 0 6px 0 6px;
-                        font-size: 12px;
-                    }
-                """)
-            else:
-                category_group.setStyleSheet("""
-                    QGroupBox {
-                        font-weight: bold;
-                        color: #ffffff;
-                        border: 1px solid #4a90e2;
-                        border-radius: 6px;
-                        margin-top: 6px;
-                        padding-top: 10px;
-                        background-color: #2a2a2a;
-                        max-height: 300px;
-                    }
-                    QGroupBox::title {
-                        subcontrol-origin: margin;
-                        left: 10px;
-                        padding: 0 8px 0 8px;
-                        font-size: 13px;
-                    }
-                """)
+            category_group.setStyleSheet("""
+                QGroupBox {
+                    font-weight: bold;
+                    color: #ffffff;
+                    border: 1px solid #4a90e2;
+                    border-radius: 6px;
+                    margin-top: 6px;
+                    padding-top: 10px;
+                    background-color: #2a2a2a;
+                }
+                QGroupBox::title {
+                    subcontrol-origin: margin;
+                    left: 10px;
+                    padding: 0 8px 0 8px;
+                    font-size: 13px;
+                }
+            """)
             
             category_layout = QVBoxLayout(category_group)
-            if is_single_setting:
-                category_layout.setContentsMargins(8, 8, 8, 8)  # Better margins for readability
-                category_layout.setSpacing(4)  # Better spacing
-            else:
-                category_layout.setContentsMargins(10, 10, 10, 10)  # Good margins
-                category_layout.setSpacing(6)  # Good spacing
+            category_layout.setContentsMargins(10, 10, 10, 10)  # Consistent good margins
+            category_layout.setSpacing(6)  # Consistent good spacing
             
             # Add settings for this category
             for setting_key, setting_data in sorted(settings, key=lambda x: x[1].get("name", "")):
@@ -3125,6 +3097,7 @@ class AdvancedTab(QWidget):
     def create_setting_widget(self, setting_key, setting_data):
         """Create a widget for a single setting."""
         widget = QWidget()
+        widget.setMinimumHeight(60)  # Ensure minimum height for readability
         widget.setStyleSheet("""
             QWidget {
                 background-color: #333;
