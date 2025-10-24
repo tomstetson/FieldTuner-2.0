@@ -704,7 +704,7 @@ class PresetCard(QWidget):
     def setup_ui(self):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(15)
+        layout.setSpacing(8)
         
         # Icon and title
         header_layout = QHBoxLayout()
@@ -1113,16 +1113,16 @@ class GraphicsTab(QWidget):
     
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(12, 12, 12, 12)  # Reduced margins
-        layout.setSpacing(12)  # Reduced spacing
+        layout.setContentsMargins(6, 6, 6, 6)  # Minimal margins
+        layout.setSpacing(6)  # Minimal spacing
         
         # Header
         header = QLabel("Graphics Settings")
         header.setStyleSheet("""
-            font-size: 24px; 
+            font-size: 18px; 
             font-weight: bold; 
             color: #ffffff; 
-            margin-bottom: 10px;
+            margin-bottom: 4px;
         """)
         layout.addWidget(header)
         
@@ -1139,7 +1139,7 @@ class GraphicsTab(QWidget):
         group.setStyleSheet(self.get_group_style())
         
         layout = QFormLayout()
-        layout.setSpacing(15)
+        layout.setSpacing(8)
         
         # Fullscreen mode
         self.fullscreen_mode = QComboBox()
@@ -1164,7 +1164,7 @@ class GraphicsTab(QWidget):
         group.setStyleSheet(self.get_group_style())
         
         layout = QFormLayout()
-        layout.setSpacing(15)
+        layout.setSpacing(8)
         
         # Quality settings
         quality_settings = [
@@ -1193,7 +1193,7 @@ class GraphicsTab(QWidget):
         group.setStyleSheet(self.get_group_style())
         
         layout = QFormLayout()
-        layout.setSpacing(15)
+        layout.setSpacing(8)
         
         # Anti-aliasing
         self.aa_method = QComboBox()
@@ -1477,7 +1477,7 @@ class CodeViewTab(QWidget):
 
 
 class BackupTab(QWidget):
-    """Completely rebuilt backup management - NO SCROLLING ISSUES."""
+    """Simplified backup management - backup selector only."""
 
     def __init__(self, config_manager):
         super().__init__()
@@ -1486,37 +1486,37 @@ class BackupTab(QWidget):
         self.refresh_backups()
 
     def setup_ui(self):
-        # Main layout - ZERO margins for maximum space
+        # Main layout - tight spacing
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(2)
+        layout.setContentsMargins(4, 4, 4, 4)
+        layout.setSpacing(4)
 
-        # Create backup section - ultra compact
+        # Create backup section
         create_widget = QWidget()
-        create_widget.setFixedHeight(40)
+        create_widget.setFixedHeight(36)
         create_widget.setStyleSheet("""
             QWidget {
                 background-color: #2a2a2a;
                 border: 1px solid #444;
-                border-radius: 4px;
+                border-radius: 3px;
             }
         """)
         create_layout = QHBoxLayout(create_widget)
-        create_layout.setContentsMargins(6, 4, 6, 4)
+        create_layout.setContentsMargins(4, 2, 4, 2)
         create_layout.setSpacing(4)
 
         # Backup name input
         self.backup_name_input = QLineEdit()
         self.backup_name_input.setPlaceholderText("Backup name (optional)")
-        self.backup_name_input.setFixedHeight(28)
+        self.backup_name_input.setFixedHeight(24)
         self.backup_name_input.setStyleSheet("""
             QLineEdit {
                 background-color: #444;
                 color: white;
                 border: 1px solid #666;
-                padding: 4px;
+                padding: 2px 4px;
                 border-radius: 2px;
-                font-size: 12px;
+                font-size: 11px;
             }
             QLineEdit:focus {
                 border-color: #4a90e2;
@@ -1527,16 +1527,16 @@ class BackupTab(QWidget):
 
         # Create button
         self.create_backup_btn = QPushButton("Create")
-        self.create_backup_btn.setFixedHeight(28)
+        self.create_backup_btn.setFixedHeight(24)
         self.create_backup_btn.setStyleSheet("""
             QPushButton {
                 background-color: #4a90e2;
                 color: white;
                 border: none;
-                padding: 4px 8px;
+                padding: 2px 6px;
                 border-radius: 2px;
                 font-weight: bold;
-                font-size: 12px;
+                font-size: 11px;
             }
             QPushButton:hover {
                 background-color: #357abd;
@@ -1547,16 +1547,16 @@ class BackupTab(QWidget):
 
         # Refresh button
         self.refresh_btn = QPushButton("Refresh")
-        self.refresh_btn.setFixedHeight(28)
+        self.refresh_btn.setFixedHeight(24)
         self.refresh_btn.setStyleSheet("""
             QPushButton {
                 background-color: #666;
                 color: white;
                 border: none;
-                padding: 4px 8px;
+                padding: 2px 6px;
                 border-radius: 2px;
                 font-weight: bold;
-                font-size: 12px;
+                font-size: 11px;
             }
             QPushButton:hover {
                 background-color: #555;
@@ -1567,25 +1567,25 @@ class BackupTab(QWidget):
 
         layout.addWidget(create_widget)
 
-        # Most recent backup - ultra compact
+        # Most recent backup info
         recent_widget = QWidget()
-        recent_widget.setFixedHeight(40)
+        recent_widget.setFixedHeight(32)
         recent_widget.setStyleSheet("""
             QWidget {
                 background-color: #1a4d1a;
                 border: 1px solid #2e7d32;
-                border-radius: 4px;
+                border-radius: 3px;
             }
         """)
         recent_layout = QHBoxLayout(recent_widget)
-        recent_layout.setContentsMargins(6, 4, 6, 4)
+        recent_layout.setContentsMargins(4, 2, 4, 2)
         recent_layout.setSpacing(4)
 
         # Recent backup info
         self.recent_backup_label = QLabel("No recent backup")
         self.recent_backup_label.setStyleSheet("""
             color: #cccccc;
-            font-size: 12px;
+            font-size: 11px;
         """)
         recent_layout.addWidget(self.recent_backup_label)
 
@@ -1593,16 +1593,16 @@ class BackupTab(QWidget):
 
         # Quick restore button
         self.quick_restore_btn = QPushButton("Restore Most Recent")
-        self.quick_restore_btn.setFixedHeight(28)
+        self.quick_restore_btn.setFixedHeight(24)
         self.quick_restore_btn.setStyleSheet("""
             QPushButton {
                 background-color: #2e7d32;
                 color: white;
                 border: none;
-                padding: 4px 8px;
+                padding: 2px 6px;
                 border-radius: 2px;
                 font-weight: bold;
-                font-size: 12px;
+                font-size: 11px;
             }
             QPushButton:hover {
                 background-color: #1b5e20;
@@ -1618,24 +1618,24 @@ class BackupTab(QWidget):
 
         layout.addWidget(recent_widget)
 
-        # Backup list - FIXED HEIGHT to prevent scrolling
+        # Backup list - simplified
         self.backup_list = QListWidget()
-        self.backup_list.setFixedHeight(300)  # Fixed height prevents scrolling
+        self.backup_list.setFixedHeight(280)
         self.backup_list.setStyleSheet("""
             QListWidget {
                 background-color: #333;
                 color: white;
                 border: 1px solid #555;
-                border-radius: 4px;
-                padding: 2px;
+                border-radius: 3px;
+                padding: 1px;
                 font-family: 'Consolas', 'Monaco', monospace;
-                font-size: 11px;
+                font-size: 10px;
             }
             QListWidget::item {
-                padding: 4px;
+                padding: 3px;
                 border-bottom: 1px solid #444;
-                border-radius: 2px;
-                margin: 1px;
+                border-radius: 1px;
+                margin: 0px;
             }
             QListWidget::item:selected {
                 background-color: #4a90e2;
@@ -1647,32 +1647,32 @@ class BackupTab(QWidget):
         """)
         layout.addWidget(self.backup_list)
 
-        # Action buttons - ultra compact
+        # Action buttons
         button_widget = QWidget()
-        button_widget.setFixedHeight(40)
+        button_widget.setFixedHeight(36)
         button_widget.setStyleSheet("""
             QWidget {
                 background-color: #2a2a2a;
                 border: 1px solid #444;
-                border-radius: 4px;
+                border-radius: 3px;
             }
         """)
         button_layout = QHBoxLayout(button_widget)
-        button_layout.setContentsMargins(6, 4, 6, 4)
+        button_layout.setContentsMargins(4, 2, 4, 2)
         button_layout.setSpacing(4)
 
         # Restore selected
         self.restore_btn = QPushButton("Restore Selected")
-        self.restore_btn.setFixedHeight(28)
+        self.restore_btn.setFixedHeight(24)
         self.restore_btn.setStyleSheet("""
             QPushButton {
                 background-color: #2e7d32;
                 color: white;
                 border: none;
-                padding: 4px 8px;
+                padding: 2px 6px;
                 border-radius: 2px;
                 font-weight: bold;
-                font-size: 12px;
+                font-size: 11px;
             }
             QPushButton:hover {
                 background-color: #1b5e20;
@@ -1688,16 +1688,16 @@ class BackupTab(QWidget):
 
         # Delete selected
         self.delete_btn = QPushButton("Delete Selected")
-        self.delete_btn.setFixedHeight(28)
+        self.delete_btn.setFixedHeight(24)
         self.delete_btn.setStyleSheet("""
             QPushButton {
                 background-color: #d32f2f;
                 color: white;
                 border: none;
-                padding: 4px 8px;
+                padding: 2px 6px;
                 border-radius: 2px;
                 font-weight: bold;
-                font-size: 12px;
+                font-size: 11px;
             }
             QPushButton:hover {
                 background-color: #b71c1c;
@@ -1911,6 +1911,7 @@ class BackupTab(QWidget):
         try:
             backup_path = str(self.config_manager.BACKUP_DIR)
             os.makedirs(backup_path, exist_ok=True)
+            import subprocess
             subprocess.run(f'explorer "{backup_path}"', shell=True, check=False)
         except Exception as e:
             QMessageBox.warning(self, "Error", f"❌ Failed to open backup folder: {str(e)}")
@@ -1928,6 +1929,7 @@ class BackupTab(QWidget):
             return
         
         try:
+            import subprocess
             subprocess.run(f'explorer /select,"{backup_file}"', shell=True, check=False)
         except Exception as e:
             QMessageBox.warning(self, "Error", f"❌ Failed to open backup file: {str(e)}")
@@ -2124,14 +2126,14 @@ class MainWindow(QMainWindow):
         # Set scroll area as central widget
         self.setCentralWidget(scroll_area)
         
-        # Main layout - optimized spacing
+        # Main layout - tight spacing
         main_layout = QVBoxLayout(central_widget)
-        main_layout.setContentsMargins(8, 8, 8, 8)  # Reduced margins
-        main_layout.setSpacing(8)  # Reduced spacing
+        main_layout.setContentsMargins(4, 4, 4, 4)  # Minimal margins
+        main_layout.setSpacing(4)  # Minimal spacing
         
-        # Header with subtle gradient - optimized height
+        # Header with subtle gradient - compact height
         header_widget = QWidget()
-        header_widget.setFixedHeight(50)  # Reduced height
+        header_widget.setFixedHeight(40)  # More compact height
         header_widget.setStyleSheet("""
             QWidget {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
@@ -2141,7 +2143,7 @@ class MainWindow(QMainWindow):
         """)
         
         header_layout = QHBoxLayout(header_widget)
-        header_layout.setContentsMargins(20, 8, 20, 8)  # Reduced margins
+        header_layout.setContentsMargins(12, 4, 12, 4)  # Minimal margins
         
         # Title
         title_label = QLabel("🎮 FieldTuner")
@@ -2677,19 +2679,19 @@ class AdvancedTab(QWidget):
     def setup_ui(self):
         """Setup the advanced settings UI."""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(12, 12, 12, 12)  # Reduced margins
-        layout.setSpacing(12)  # Reduced spacing
+        layout.setContentsMargins(6, 6, 6, 6)  # Minimal margins
+        layout.setSpacing(6)  # Minimal spacing
         
         # Header
         header = QLabel("⚙️ Advanced Settings")
         header.setStyleSheet("""
-            font-size: 24px;
+            font-size: 18px;
             font-weight: bold;
             color: #ffffff;
-            margin-bottom: 20px;
-            padding: 15px;
+            margin-bottom: 8px;
+            padding: 8px;
             background-color: #2a2a2a;
-            border-radius: 8px;
+            border-radius: 4px;
             border: 1px solid #444;
         """)
         layout.addWidget(header)
@@ -2705,9 +2707,9 @@ class AdvancedTab(QWidget):
                 background-color: #333;
                 color: white;
                 border: 1px solid #555;
-                padding: 10px;
-                border-radius: 6px;
-                font-size: 14px;
+                padding: 6px;
+                border-radius: 4px;
+                font-size: 12px;
             }
             QLineEdit:focus {
                 border-color: #4a90e2;
@@ -3097,19 +3099,19 @@ class InputTab(QWidget):
     def setup_ui(self):
         """Setup the input settings UI."""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(12, 12, 12, 12)  # Reduced margins
-        layout.setSpacing(12)  # Reduced spacing
+        layout.setContentsMargins(6, 6, 6, 6)  # Minimal margins
+        layout.setSpacing(6)  # Minimal spacing
         
         # Header
         header = QLabel("🎮 Input Settings")
         header.setStyleSheet("""
-            font-size: 24px;
+            font-size: 18px;
             font-weight: bold;
             color: #ffffff;
-            margin-bottom: 20px;
-            padding: 15px;
+            margin-bottom: 8px;
+            padding: 8px;
             background-color: #2a2a2a;
-            border-radius: 8px;
+            border-radius: 4px;
             border: 1px solid #444;
         """)
         layout.addWidget(header)
@@ -3140,7 +3142,7 @@ class InputTab(QWidget):
         # Main content widget
         self.content_widget = QWidget()
         self.content_layout = QVBoxLayout(self.content_widget)
-        self.content_layout.setSpacing(20)
+        self.content_layout.setSpacing(12)
         
         # Create input sections
         self.create_mouse_section()
@@ -3183,7 +3185,7 @@ class InputTab(QWidget):
         """)
         
         layout = QGridLayout()
-        layout.setSpacing(15)
+        layout.setSpacing(8)
         
         # Mouse Sensitivity
         self.mouse_sensitivity = self.create_slider_setting(
@@ -3258,7 +3260,7 @@ class InputTab(QWidget):
         """)
         
         layout = QGridLayout()
-        layout.setSpacing(15)
+        layout.setSpacing(8)
         
         # Key Repeat Rate
         self.key_repeat_rate = self.create_slider_setting(
@@ -3324,7 +3326,7 @@ class InputTab(QWidget):
         """)
         
         layout = QGridLayout()
-        layout.setSpacing(15)
+        layout.setSpacing(8)
         
         # Controller Sensitivity
         self.controller_sensitivity = self.create_slider_setting(
@@ -3390,7 +3392,7 @@ class InputTab(QWidget):
         """)
         
         layout = QGridLayout()
-        layout.setSpacing(15)
+        layout.setSpacing(8)
         
         # One-Handed Mode
         self.one_handed_mode = self.create_toggle_setting(
@@ -3454,7 +3456,7 @@ class InputTab(QWidget):
         """)
         
         layout = QGridLayout()
-        layout.setSpacing(15)
+        layout.setSpacing(8)
         
         # Raw Input
         self.raw_input = self.create_toggle_setting(
