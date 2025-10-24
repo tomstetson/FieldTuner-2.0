@@ -920,7 +920,7 @@ class QuickSettingsTab(QWidget):
     def create_professional_toggle(self, title, description):
         """Create a professional toggle switch widget with modern design."""
         widget = QWidget()
-        widget.setFixedHeight(80)  # Increased height for better text display
+        # Remove fixed height to allow natural sizing
         widget.setStyleSheet("""
             QWidget {
                 background-color: #333333;
@@ -938,11 +938,11 @@ class QuickSettingsTab(QWidget):
         layout.setContentsMargins(16, 12, 16, 12)
         layout.setSpacing(16)
         
-        # Left side - Content
+        # Left side - Content with proper sizing
         content_widget = QWidget()
         content_layout = QVBoxLayout(content_widget)
         content_layout.setContentsMargins(0, 0, 0, 0)
-        content_layout.setSpacing(6)  # Increased spacing
+        content_layout.setSpacing(8)  # Better spacing
         
         # Title with professional typography
         title_label = QLabel(title)
@@ -951,36 +951,34 @@ class QuickSettingsTab(QWidget):
             font-size: 14px;
             font-weight: 600;
             letter-spacing: 0.3px;
-            background: transparent;
-            border: none;
-            padding: 0px;
         """)
+        title_label.setWordWrap(True)
         content_layout.addWidget(title_label)
         
-        # Description with proper styling and no weird boxes
+        # Description with clean styling - no weird boxes
         desc_label = QLabel(description)
         desc_label.setStyleSheet("""
-            color: #b0b0b0;
-            font-size: 11px;
-            line-height: 1.4;
-            font-weight: 400;
-            background: transparent;
-            border: none;
-            padding: 0px;
-            margin: 0px;
+            QLabel {
+                color: #b0b0b0;
+                font-size: 11px;
+                font-weight: 400;
+                background: transparent;
+                border: none;
+                padding: 0px;
+                margin: 0px;
+            }
         """)
         desc_label.setWordWrap(True)
-        desc_label.setMinimumHeight(30)  # Ensure enough space for text
-        desc_label.setMaximumWidth(300)  # Limit width to force wrapping
+        desc_label.setAlignment(Qt.AlignmentFlag.AlignTop)  # Align to top
         content_layout.addWidget(desc_label)
         
-        # Add content to main layout
-        layout.addWidget(content_widget)
-        layout.addStretch()
+        # Add content to main layout with proper stretch
+        layout.addWidget(content_widget, 1)  # Give content widget stretch factor
+        layout.addStretch(0)  # Don't add extra stretch
         
         # Right side - Professional toggle switch
         toggle_switch = ProfessionalToggleSwitch()
-        layout.addWidget(toggle_switch)
+        layout.addWidget(toggle_switch, 0)  # Don't stretch toggle
         
         # Store the toggle switch as an attribute for easy access
         widget.toggle_switch = toggle_switch
