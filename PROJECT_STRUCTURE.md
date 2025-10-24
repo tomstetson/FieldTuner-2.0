@@ -8,12 +8,12 @@ This document outlines the clean, organized structure of the FieldTuner project 
 
 ```
 FieldTuner/
-├── 📁 src/                          # Main source code
+├── 📁 src/                          # Main source code (3 files)
 │   ├── main.py                      # Core application (MainWindow, all tabs)
 │   ├── settings_database.py         # BF6 settings database
 │   └── debug.py                     # Debug utilities
 │
-├── 📁 assets/                       # Application assets
+├── 📁 assets/                       # Application assets (10 files)
 │   ├── icon.ico                     # Main application icon
 │   ├── logo.png                     # Professional logo
 │   ├── banner.png                   # GitHub banner
@@ -22,37 +22,18 @@ FieldTuner/
 │   ├── create_professional_logo.py  # Logo generation script
 │   └── screenshots/                 # Screenshots for documentation
 │
-├── 📁 docs/                         # Documentation
+├── 📁 docs/                         # Documentation (1 file)
 │   └── README.md                    # Documentation index
 │
-├── 📁 tests/                        # Test suite
+├── 📁 tests/                        # Test suite (3 files)
 │   ├── test_config_manager.py       # Config manager tests
 │   ├── test_ui_components.py       # UI component tests
 │   └── fixtures/                    # Test fixtures
 │
-├── 📁 installer/                    # Installation system
-│   ├── create_installer.py          # Main installer creator
-│   ├── create_installer_package.py  # Package creator
-│   ├── install_fieldtuner.py       # Python installer
-│   └── install.bat                 # Batch installer
-│
-├── 📁 releases/                     # Release packages
-│   ├── FieldTuner_Installer_v1.0/  # Installer package
-│   ├── FieldTuner_Portable_v1.0/    # Portable package
-│   ├── FieldTuner_v1.0_20251024/   # Standard package
-│   └── *.zip                       # Release archives
-│
 ├── 📄 README.md                     # Main project README
 ├── 📄 LICENSE                       # MIT License
-├── 📄 pyproject.toml                # Modern Python project config
-├── 📄 setup.py                      # Package setup
-├── 📄 requirements.txt              # Dependencies
-├── 📄 requirements-dev.txt         # Development dependencies
-├── 📄 FieldTuner.spec              # PyInstaller spec
-├── 📄 build_simple.py              # Simple build script
-├── 📄 build_portable.bat            # Portable build script
-├── 📄 build.bat                     # Main build script
-├── 📄 create_release.py             # Release creation script
+├── 📄 pyproject.toml                # Modern Python project config (dependencies, build)
+├── 📄 build.py                      # Simple build script (PyInstaller)
 ├── 📄 CODE_OF_CONDUCT.md            # Code of conduct
 ├── 📄 CONTRIBUTING.md               # Contribution guidelines
 └── 📄 PROJECT_STRUCTURE.md          # This file
