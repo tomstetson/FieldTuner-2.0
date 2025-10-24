@@ -2106,10 +2106,6 @@ class MainWindow(QMainWindow):
         
         main_layout.addWidget(header_widget)
         
-        # Connection status widget
-        self.connection_widget = self.create_connection_widget()
-        main_layout.addWidget(self.connection_widget)
-        
         # Tab widget
         self.tab_widget = QTabWidget()
         self.tab_widget.setStyleSheet("""
@@ -2271,126 +2267,6 @@ class MainWindow(QMainWindow):
             }
         """)
     
-    def create_connection_widget(self):
-        """Create a sleek, compact connection status widget inspired by WeMod."""
-        widget = QWidget()
-        widget.setFixedHeight(50)
-        
-        if self.config_manager.config_path and self.config_manager.config_path.exists():
-            # Connected state - sleek and minimal
-            widget.setStyleSheet("""
-                QWidget {
-                    background-color: rgba(76, 175, 80, 0.15);
-                    border: 1px solid rgba(76, 175, 80, 0.4);
-                    border-radius: 6px;
-                    margin: 3px;
-                }
-            """)
-            
-            layout = QHBoxLayout(widget)
-            layout.setContentsMargins(12, 8, 12, 8)
-            
-            # Status indicator (small circle)
-            status_indicator = QLabel("●")
-            status_indicator.setStyleSheet("""
-                color: #4CAF50;
-                font-size: 12px;
-                font-weight: bold;
-            """)
-            layout.addWidget(status_indicator)
-            
-            # Compact status text
-            status_text = QLabel("BF6 Config Connected")
-            status_text.setStyleSheet("""
-                color: #4CAF50;
-                font-size: 13px;
-                font-weight: 600;
-            """)
-            layout.addWidget(status_text)
-            
-            layout.addStretch()
-            
-            # File info (subtle)
-            file_info = QLabel(f"{len(self.config_manager.config_data)} settings")
-            file_info.setStyleSheet("""
-                color: #888;
-                font-size: 11px;
-            """)
-            layout.addWidget(file_info)
-            
-            # Quick restore button (minimal)
-            restore_btn = QPushButton("Restore")
-            restore_btn.setStyleSheet("""
-                QPushButton {
-                    background-color: rgba(76, 175, 80, 0.2);
-                    color: #4CAF50;
-                    border: 1px solid rgba(76, 175, 80, 0.5);
-                    padding: 4px 12px;
-                    font-size: 11px;
-                    font-weight: 500;
-                    border-radius: 4px;
-                }
-                QPushButton:hover {
-                    background-color: rgba(76, 175, 80, 0.3);
-                }
-            """)
-            restore_btn.clicked.connect(self.quick_restore)
-            layout.addWidget(restore_btn)
-            
-        else:
-            # Not connected state - subtle warning
-            widget.setStyleSheet("""
-                QWidget {
-                    background-color: rgba(244, 67, 54, 0.15);
-                    border: 1px solid rgba(244, 67, 54, 0.4);
-                    border-radius: 6px;
-                    margin: 3px;
-                }
-            """)
-            
-            layout = QHBoxLayout(widget)
-            layout.setContentsMargins(12, 8, 12, 8)
-            
-            # Status indicator
-            status_indicator = QLabel("●")
-            status_indicator.setStyleSheet("""
-                color: #f44336;
-                font-size: 12px;
-                font-weight: bold;
-            """)
-            layout.addWidget(status_indicator)
-            
-            # Status text
-            status_text = QLabel("BF6 Config Not Found")
-            status_text.setStyleSheet("""
-                color: #f44336;
-                font-size: 13px;
-                font-weight: 600;
-            """)
-            layout.addWidget(status_text)
-            
-            layout.addStretch()
-            
-            # Manual select button
-            select_btn = QPushButton("Browse")
-            select_btn.setStyleSheet("""
-                QPushButton {
-                    background-color: rgba(244, 67, 54, 0.2);
-                    color: #f44336;
-                    border: 1px solid rgba(244, 67, 54, 0.5);
-                    padding: 4px 12px;
-                    font-size: 11px;
-                    font-weight: 500;
-                    border-radius: 4px;
-                }
-                QPushButton:hover {
-                    background-color: rgba(244, 67, 54, 0.3);
-                }
-            """)
-            select_btn.clicked.connect(self.manual_config_select)
-            layout.addWidget(select_btn)
-        
-        return widget
     
     def apply_super_slick_theme(self):
         """Apply super slick theme."""
@@ -2699,19 +2575,20 @@ class MainWindow(QMainWindow):
 
 
 class AdvancedTab(QWidget):
-    """Advanced Settings Tab - Comprehensive interface for all BF6 settings."""
+    """Advanced Settings Tab - Clean, searchable interface for all BF6 settings."""
     
     def __init__(self, config_manager):
         super().__init__()
         self.config_manager = config_manager
+        self.all_settings = {}  # Store all settings for search
         self.setup_ui()
         self.load_settings()
     
     def setup_ui(self):
-        """Setup the advanced settings UI."""
+        """Setup the advanced settings UI with clean search and display."""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(6, 6, 6, 6)  # Minimal margins
-        layout.setSpacing(6)  # Minimal spacing
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(8)
         
         # Header
         header = QLabel("⚙️ Advanced Settings")
@@ -2727,26 +2604,38 @@ class AdvancedTab(QWidget):
         """)
         layout.addWidget(header)
         
-        # Search and filter section
-        search_layout = QHBoxLayout()
+        # Search section
+        search_widget = QWidget()
+        search_widget.setStyleSheet("""
+            QWidget {
+                background-color: #2a2a2a;
+                border: 1px solid #444;
+                border-radius: 6px;
+                padding: 8px;
+            }
+        """)
+        search_layout = QHBoxLayout(search_widget)
+        search_layout.setContentsMargins(8, 8, 8, 8)
+        search_layout.setSpacing(8)
         
         # Search box
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("🔍 Search settings...")
+        self.search_input.setPlaceholderText("🔍 Search settings by name or description...")
         self.search_input.setStyleSheet("""
             QLineEdit {
                 background-color: #333;
                 color: white;
                 border: 1px solid #555;
-                padding: 6px;
+                padding: 8px 12px;
                 border-radius: 4px;
                 font-size: 12px;
             }
             QLineEdit:focus {
                 border-color: #4a90e2;
+                background-color: #3a3a3a;
             }
         """)
-        self.search_input.textChanged.connect(self.filter_settings)
+        self.search_input.textChanged.connect(self.perform_search)
         search_layout.addWidget(self.search_input)
         
         # Category filter
@@ -2757,77 +2646,69 @@ class AdvancedTab(QWidget):
                 background-color: #333;
                 color: white;
                 border: 1px solid #555;
-                padding: 8px;
-                border-radius: 6px;
-                font-size: 14px;
+                padding: 8px 12px;
+                border-radius: 4px;
+                font-size: 12px;
+                min-width: 120px;
             }
-            QComboBox::drop-down {
-                border: none;
-            }
-            QComboBox::down-arrow {
-                image: none;
-                border-left: 5px solid transparent;
-                border-right: 5px solid transparent;
-                border-top: 5px solid #888;
+            QComboBox:focus {
+                border-color: #4a90e2;
             }
         """)
-        self.category_filter.currentTextChanged.connect(self.filter_settings)
+        self.category_filter.currentTextChanged.connect(self.perform_search)
         search_layout.addWidget(self.category_filter)
         
-        # Reset to defaults button
-        self.reset_btn = QPushButton("🔄 Reset to Defaults")
-        self.reset_btn.setStyleSheet("""
+        # Clear button
+        self.clear_btn = QPushButton("Clear")
+        self.clear_btn.setStyleSheet("""
             QPushButton {
-                background-color: #d32f2f;
+                background-color: #666;
                 color: white;
                 border: none;
-                padding: 10px 20px;
-                border-radius: 6px;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-size: 12px;
                 font-weight: bold;
-                font-size: 14px;
             }
             QPushButton:hover {
-                background-color: #b71c1c;
+                background-color: #555;
             }
         """)
-        self.reset_btn.clicked.connect(self.reset_to_defaults)
-        search_layout.addWidget(self.reset_btn)
+        self.clear_btn.clicked.connect(self.clear_search)
+        search_layout.addWidget(self.clear_btn)
         
-        layout.addLayout(search_layout)
+        layout.addWidget(search_widget)
         
-        # Settings container with scroll
-        scroll_area = QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setStyleSheet("""
+        # Results count
+        self.results_label = QLabel("Loading settings...")
+        self.results_label.setStyleSheet("""
+            color: #888;
+            font-size: 11px;
+            padding: 4px 8px;
+        """)
+        layout.addWidget(self.results_label)
+        
+        # Settings list with proper scroll
+        self.settings_scroll = QScrollArea()
+        self.settings_scroll.setWidgetResizable(True)
+        self.settings_scroll.setStyleSheet("""
             QScrollArea {
-                background-color: transparent;
-                border: none;
-            }
-            QScrollBar:vertical {
-                background-color: #333;
-                width: 12px;
-                border-radius: 6px;
-            }
-            QScrollBar::handle:vertical {
-                background-color: #666;
-                border-radius: 6px;
-                min-height: 20px;
-            }
-            QScrollBar::handle:vertical:hover {
-                background-color: #888;
+                border: 1px solid #444;
+                border-radius: 4px;
+                background-color: #2a2a2a;
             }
         """)
         
-        # Settings widget
         self.settings_widget = QWidget()
         self.settings_layout = QVBoxLayout(self.settings_widget)
-        self.settings_layout.setSpacing(15)
+        self.settings_layout.setContentsMargins(8, 8, 8, 8)
+        self.settings_layout.setSpacing(8)
         
-        scroll_area.setWidget(self.settings_widget)
-        layout.addWidget(scroll_area)
+        self.settings_scroll.setWidget(self.settings_widget)
+        layout.addWidget(self.settings_scroll)
         
-        # Status bar
-        self.status_label = QLabel("Ready to configure advanced settings")
+        # Status label
+        self.status_label = QLabel("Ready")
         self.status_label.setStyleSheet("""
             color: #888;
             font-size: 12px;
@@ -2841,61 +2722,128 @@ class AdvancedTab(QWidget):
         self.load_settings()
     
     def load_settings(self):
-        """Load and display all settings from the database."""
+        """Load all settings from the database and display them."""
         from settings_database import BF6_SETTINGS_DATABASE
         
+        # Store all settings for search
+        self.all_settings = BF6_SETTINGS_DATABASE.copy()
+        
         # Clear existing settings
+        self.clear_settings_display()
+        
+        # Display all settings initially
+        self.display_settings(self.all_settings)
+        
+        self.results_label.setText(f"Showing {len(self.all_settings)} settings")
+        self.status_label.setText("Ready")
+    
+    def clear_settings_display(self):
+        """Clear all settings from the display."""
         for i in reversed(range(self.settings_layout.count())):
             child = self.settings_layout.itemAt(i).widget()
             if child:
                 child.setParent(None)
+    
+    def display_settings(self, settings_dict):
+        """Display the given settings dictionary."""
+        if not settings_dict:
+            # Show no results message
+            no_results = QLabel("No settings found matching your search criteria.")
+            no_results.setStyleSheet("""
+                color: #888;
+                font-size: 14px;
+                padding: 20px;
+                text-align: center;
+            """)
+            no_results.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.settings_layout.addWidget(no_results)
+            return
         
         # Group settings by category
         categories = {}
-        for setting_key, setting_data in BF6_SETTINGS_DATABASE.items():
+        for setting_key, setting_data in settings_dict.items():
             category = setting_data.get("category", "Other")
             if category not in categories:
                 categories[category] = []
             categories[category].append((setting_key, setting_data))
         
         # Create category sections
-        for category_name, settings in categories.items():
+        for category_name, settings in sorted(categories.items()):
             if not settings:
                 continue
                 
             # Category header
-            category_group = QGroupBox(f"📁 {category_name}")
+            category_group = QGroupBox(f"📁 {category_name} ({len(settings)} settings)")
             category_group.setStyleSheet("""
                 QGroupBox {
                     font-weight: bold;
                     color: #ffffff;
                     border: 2px solid #4a90e2;
                     border-radius: 8px;
-                    margin-top: 15px;
-                    padding-top: 15px;
+                    margin-top: 8px;
+                    padding-top: 12px;
                     background-color: #2a2a2a;
                 }
                 QGroupBox::title {
                     subcontrol-origin: margin;
-                    left: 15px;
+                    left: 12px;
                     padding: 0 8px 0 8px;
-                    font-size: 16px;
+                    font-size: 14px;
                 }
             """)
             
-            category_layout = QVBoxLayout()
-            category_layout.setSpacing(10)
+            category_layout = QVBoxLayout(category_group)
+            category_layout.setSpacing(6)
             
             # Add settings for this category
-            for setting_key, setting_data in settings:
+            for setting_key, setting_data in sorted(settings, key=lambda x: x[1].get("name", "")):
                 setting_widget = self.create_setting_widget(setting_key, setting_data)
                 category_layout.addWidget(setting_widget)
             
-            category_group.setLayout(category_layout)
             self.settings_layout.addWidget(category_group)
+    
+    def perform_search(self):
+        """Perform search and filter settings."""
+        search_text = self.search_input.text().lower().strip()
+        category_filter = self.category_filter.currentText()
         
-        # Add stretch to push everything to top
-        self.settings_layout.addStretch()
+        # Filter settings
+        filtered_settings = {}
+        for setting_key, setting_data in self.all_settings.items():
+            # Check category filter
+            if category_filter != "All Categories" and category_filter not in setting_data.get("category", ""):
+                continue
+            
+            # Check search text
+            if search_text:
+                searchable_text = (
+                    setting_data.get("name", "") + " " +
+                    setting_data.get("description", "") + " " +
+                    setting_data.get("tooltip", "") + " " +
+                    setting_key
+                ).lower()
+                
+                if search_text not in searchable_text:
+                    continue
+            
+            filtered_settings[setting_key] = setting_data
+        
+        # Update display
+        self.clear_settings_display()
+        self.display_settings(filtered_settings)
+        
+        # Update results count
+        count = len(filtered_settings)
+        if search_text or category_filter != "All Categories":
+            self.results_label.setText(f"Found {count} settings matching your criteria")
+        else:
+            self.results_label.setText(f"Showing {count} settings")
+    
+    def clear_search(self):
+        """Clear search and show all settings."""
+        self.search_input.clear()
+        self.category_filter.setCurrentIndex(0)
+        self.perform_search()
     
     def create_setting_widget(self, setting_key, setting_data):
         """Create a widget for a single setting."""
@@ -3088,30 +3036,6 @@ class AdvancedTab(QWidget):
             log_error(f"Failed to update setting {setting_key}: {str(e)}", "ADVANCED", e)
             self.status_label.setText(f"Error updating {setting_key}")
     
-    def filter_settings(self):
-        """Filter settings based on search and category."""
-        search_text = self.search_input.text().lower()
-        category_filter = self.category_filter.currentText()
-        
-        # Hide/show settings based on filter
-        for i in range(self.settings_layout.count()):
-            widget = self.settings_layout.itemAt(i).widget()
-            if isinstance(widget, QGroupBox):
-                # Check if category matches
-                category_match = (category_filter == "All Categories" or 
-                                category_filter in widget.title())
-                
-                # Check if any setting in category matches search
-                search_match = True
-                if search_text:
-                    search_match = False
-                    # Look through all child widgets for matching text
-                    for child in widget.findChildren(QWidget):
-                        if hasattr(child, 'text') and search_text in child.text().lower():
-                            search_match = True
-                            break
-                
-                widget.setVisible(category_match and search_match)
     
     def reset_to_defaults(self):
         """Reset all settings to their default values."""
