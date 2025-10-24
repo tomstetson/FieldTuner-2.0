@@ -32,55 +32,55 @@ from debug import debug_logger, log_info, log_warning, log_error, log_debug, get
 import json
 
 
-class PinnedSettingsManager:
-    """Manages pinned settings state persistence."""
+class FavoritesManager:
+    """Manages favorite settings state persistence."""
     
     def __init__(self):
-        self.pinned_settings_file = Path.home() / "AppData" / "Roaming" / "FieldTuner" / "pinned_settings.json"
-        self.pinned_settings = self.load_pinned_settings()
+        self.favorites_file = Path.home() / "AppData" / "Roaming" / "FieldTuner" / "favorites.json"
+        self.favorite_settings = self.load_favorites()
     
-    def load_pinned_settings(self):
-        """Load pinned settings from file."""
+    def load_favorites(self):
+        """Load favorite settings from file."""
         try:
-            if self.pinned_settings_file.exists():
-                with open(self.pinned_settings_file, 'r') as f:
+            if self.favorites_file.exists():
+                with open(self.favorites_file, 'r') as f:
                     data = json.load(f)
-                    log_info(f"Loaded {len(data)} pinned settings", "PINNED")
+                    log_info(f"Loaded {len(data)} favorite settings", "FAVORITES")
                     return data
         except Exception as e:
-            log_error(f"Failed to load pinned settings: {str(e)}", "PINNED", e)
+            log_error(f"Failed to load favorites: {str(e)}", "FAVORITES", e)
         return {}
     
-    def save_pinned_settings(self):
-        """Save pinned settings to file."""
+    def save_favorites(self):
+        """Save favorite settings to file."""
         try:
-            self.pinned_settings_file.parent.mkdir(parents=True, exist_ok=True)
-            with open(self.pinned_settings_file, 'w') as f:
-                json.dump(self.pinned_settings, f, indent=2)
-            log_info(f"Saved {len(self.pinned_settings)} pinned settings", "PINNED")
+            self.favorites_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(self.favorites_file, 'w') as f:
+                json.dump(self.favorite_settings, f, indent=2)
+            log_info(f"Saved {len(self.favorite_settings)} favorite settings", "FAVORITES")
         except Exception as e:
-            log_error(f"Failed to save pinned settings: {str(e)}", "PINNED", e)
+            log_error(f"Failed to save favorites: {str(e)}", "FAVORITES", e)
     
-    def is_pinned(self, setting_key):
-        """Check if a setting is pinned."""
-        return setting_key in self.pinned_settings
+    def is_favorite(self, setting_key):
+        """Check if a setting is favorited."""
+        return setting_key in self.favorite_settings
     
-    def pin_setting(self, setting_key, setting_data):
-        """Pin a setting."""
-        self.pinned_settings[setting_key] = setting_data
-        self.save_pinned_settings()
-        log_info(f"Pinned setting: {setting_key}", "PINNED")
+    def add_favorite(self, setting_key, setting_data):
+        """Add a setting to favorites."""
+        self.favorite_settings[setting_key] = setting_data
+        self.save_favorites()
+        log_info(f"Added to favorites: {setting_key}", "FAVORITES")
     
-    def unpin_setting(self, setting_key):
-        """Unpin a setting."""
-        if setting_key in self.pinned_settings:
-            del self.pinned_settings[setting_key]
-            self.save_pinned_settings()
-            log_info(f"Unpinned setting: {setting_key}", "PINNED")
+    def remove_favorite(self, setting_key):
+        """Remove a setting from favorites."""
+        if setting_key in self.favorite_settings:
+            del self.favorite_settings[setting_key]
+            self.save_favorites()
+            log_info(f"Removed from favorites: {setting_key}", "FAVORITES")
     
-    def get_pinned_settings(self):
-        """Get all pinned settings."""
-        return self.pinned_settings.copy()
+    def get_favorites(self):
+        """Get all favorite settings."""
+        return self.favorite_settings.copy()
 
 
 class ProfessionalToggleSwitch(QWidget):
@@ -996,6 +996,43 @@ class QuickSettingsTab(QWidget):
         # Connect signals
         self.resolution_scale.valueChanged.connect(self.on_scale_changed)
         
+        # Favorites section
+        self.favorites_group = QGroupBox("⭐ Favorite Settings")
+        self.favorites_group.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                color: #ffffff;
+                border: 1px solid #4a90e2;
+                border-radius: 8px;
+                margin-top: 15px;
+                padding-top: 15px;
+                background-color: #2a2a2a;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 15px;
+                padding: 0 8px 0 8px;
+                font-size: 14px;
+            }
+        """)
+        
+        favorites_layout = QVBoxLayout(self.favorites_group)
+        favorites_layout.setContentsMargins(15, 15, 15, 15)
+        favorites_layout.setSpacing(10)
+        
+        # Add message for when no favorites
+        no_favorites_label = QLabel("No favorite settings yet. Star settings from Advanced tab to see them here.")
+        no_favorites_label.setStyleSheet("""
+            color: #888;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+        """)
+        no_favorites_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        favorites_layout.addWidget(no_favorites_label)
+        
+        layout.addWidget(self.favorites_group)
+        
         # No bottom spacer needed - buttons are truly floating
     
     def create_professional_toggle(self, title, description):
@@ -1189,39 +1226,39 @@ class QuickSettingsTab(QWidget):
         scale = self.resolution_scale.value() / 100.0
         self.config_manager.set_setting('GstRender.ResolutionScale', str(scale))
     
-    def refresh_pinned_settings(self):
-        """Refresh the pinned settings section."""
-        # This will be called when settings are pinned/unpinned
-        if hasattr(self, 'pinned_settings_group'):
-            # Clear existing pinned settings
-            for i in reversed(range(self.pinned_settings_group.layout().count())):
-                child = self.pinned_settings_group.layout().itemAt(i).widget()
+    def refresh_favorites(self):
+        """Refresh the favorites section."""
+        # This will be called when settings are favorited/unfavorited
+        if hasattr(self, 'favorites_group'):
+            # Clear existing favorites
+            for i in reversed(range(self.favorites_group.layout().count())):
+                child = self.favorites_group.layout().itemAt(i).widget()
                 if child:
                     child.setParent(None)
             
-            # Get main window's pinned manager
+            # Get main window's favorites manager
             main_window = self.parent().parent().parent()
-            if hasattr(main_window, 'pinned_manager'):
-                pinned_settings = main_window.pinned_manager.get_pinned_settings()
+            if hasattr(main_window, 'favorites_manager'):
+                favorite_settings = main_window.favorites_manager.get_favorites()
                 
-                if pinned_settings:
-                    for setting_key, setting_data in pinned_settings.items():
-                        self.add_pinned_setting(setting_key, setting_data)
+                if favorite_settings:
+                    for setting_key, setting_data in favorite_settings.items():
+                        self.add_favorite_setting(setting_key, setting_data)
                 else:
-                    # Show message when no pinned settings
-                    no_pinned_label = QLabel("No pinned settings yet. Pin settings from Advanced tab to see them here.")
-                    no_pinned_label.setStyleSheet("""
+                    # Show message when no favorites
+                    no_favorites_label = QLabel("No favorite settings yet. Star settings from Advanced tab to see them here.")
+                    no_favorites_label.setStyleSheet("""
                         color: #888;
                         font-style: italic;
                         padding: 20px;
                         text-align: center;
                     """)
-                    no_pinned_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                    self.pinned_settings_group.layout().addWidget(no_pinned_label)
+                    no_favorites_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                    self.favorites_group.layout().addWidget(no_favorites_label)
     
-    def add_pinned_setting(self, setting_key, setting_data):
-        """Add a pinned setting to the quick settings."""
-        if not hasattr(self, 'pinned_settings_group'):
+    def add_favorite_setting(self, setting_key, setting_data):
+        """Add a favorite setting to the quick settings."""
+        if not hasattr(self, 'favorites_group'):
             return
         
         # Create setting widget similar to AdvancedTab
@@ -1250,13 +1287,13 @@ class QuickSettingsTab(QWidget):
         layout.addStretch()
         
         # Control widget
-        control_widget = self.create_pinned_control_widget(setting_key, setting_data)
+        control_widget = self.create_favorite_control_widget(setting_key, setting_data)
         layout.addWidget(control_widget)
         
-        # Unpin button
-        unpin_button = QPushButton("📌")
-        unpin_button.setFixedSize(24, 24)
-        unpin_button.setStyleSheet("""
+        # Remove from favorites button
+        remove_button = QPushButton("⭐")
+        remove_button.setFixedSize(24, 24)
+        remove_button.setStyleSheet("""
             QPushButton {
                 background: rgba(255, 193, 7, 0.3);
                 border: 1px solid rgba(255, 193, 7, 0.7);
@@ -1268,13 +1305,13 @@ class QuickSettingsTab(QWidget):
                 background: rgba(255, 193, 7, 0.5);
             }
         """)
-        unpin_button.setToolTip("Unpin from Quick Settings")
-        unpin_button.clicked.connect(lambda: self.unpin_setting(setting_key))
-        layout.addWidget(unpin_button)
+        remove_button.setToolTip("Remove from Favorites")
+        remove_button.clicked.connect(lambda: self.remove_favorite_setting(setting_key))
+        layout.addWidget(remove_button)
         
-        self.pinned_settings_group.layout().addWidget(setting_widget)
+        self.favorites_group.layout().addWidget(setting_widget)
     
-    def create_pinned_control_widget(self, setting_key, setting_data):
+    def create_favorite_control_widget(self, setting_key, setting_data):
         """Create control widget for pinned setting."""
         setting_type = setting_data.get("type", "string")
         current_value = self.config_manager.get_setting(setting_key)
@@ -1317,12 +1354,12 @@ class QuickSettingsTab(QWidget):
             line_edit.editingFinished.connect(lambda key=setting_key: self.config_manager.set_setting(key, line_edit.text()))
             return line_edit
     
-    def unpin_setting(self, setting_key):
-        """Unpin a setting from quick settings."""
+    def remove_favorite_setting(self, setting_key):
+        """Remove a setting from favorites."""
         main_window = self.parent().parent().parent()
-        if hasattr(main_window, 'pinned_manager'):
-            main_window.pinned_manager.unpin_setting(setting_key)
-            self.refresh_pinned_settings()
+        if hasattr(main_window, 'favorites_manager'):
+            main_window.favorites_manager.remove_favorite(setting_key)
+            self.refresh_favorites()
 
 
 class GraphicsTab(QWidget):
@@ -2264,7 +2301,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         log_info("Initializing FieldTuner MainWindow", "MAIN")
         self.config_manager = ConfigManager()
-        self.pinned_manager = PinnedSettingsManager()  # Add pinned settings manager
+        self.favorites_manager = FavoritesManager()  # Add favorites manager
         self.setup_ui()
         self.apply_super_slick_theme()
         self.update_status()
@@ -3394,29 +3431,30 @@ class AdvancedTab(QWidget):
         layout.addLayout(info_layout)
         layout.addStretch()
         
-        # Pin button
-        pin_button = QPushButton("📌")
-        pin_button.setFixedSize(32, 32)
-        pin_button.setStyleSheet("""
+        # Star button for favorites
+        star_button = QPushButton("⭐")
+        star_button.setFixedSize(32, 32)
+        star_button.setStyleSheet("""
             QPushButton {
-                background: rgba(255, 193, 7, 0.2);
-                border: 1px solid rgba(255, 193, 7, 0.5);
+                background: rgba(255, 193, 7, 0.1);
+                border: 1px solid rgba(255, 193, 7, 0.3);
                 border-radius: 16px;
                 color: #ffc107;
-                font-size: 14px;
+                font-size: 16px;
                 font-weight: bold;
             }
             QPushButton:hover {
-                background: rgba(255, 193, 7, 0.3);
-                border: 1px solid rgba(255, 193, 7, 0.7);
+                background: rgba(255, 193, 7, 0.2);
+                border: 1px solid rgba(255, 193, 7, 0.5);
+                color: #ffd700;
             }
             QPushButton:pressed {
-                background: rgba(255, 193, 7, 0.5);
+                background: rgba(255, 193, 7, 0.3);
             }
         """)
-        pin_button.setToolTip("Pin to Quick Settings")
-        pin_button.clicked.connect(lambda: self.toggle_pin_setting(setting_key, setting_data))
-        layout.addWidget(pin_button)
+        star_button.setToolTip("Add to Favorites")
+        star_button.clicked.connect(lambda: self.toggle_favorite_setting(setting_key, setting_data))
+        layout.addWidget(star_button)
         
         # Control widget based on type
         control_widget = self.create_control_widget(setting_key, setting_data)
@@ -3616,21 +3654,21 @@ class AdvancedTab(QWidget):
                     f"❌ Failed to reset settings: {str(e)}"
                 )
     
-    def toggle_pin_setting(self, setting_key, setting_data):
-        """Toggle pin status of a setting."""
-        # Get the main window to access pinned manager
+    def toggle_favorite_setting(self, setting_key, setting_data):
+        """Toggle favorite status of a setting."""
+        # Get the main window to access favorites manager
         main_window = self.parent().parent().parent()  # Navigate up to MainWindow
-        if hasattr(main_window, 'pinned_manager'):
-            if main_window.pinned_manager.is_pinned(setting_key):
-                main_window.pinned_manager.unpin_setting(setting_key)
-                QMessageBox.information(self, "Unpinned", f"✅ '{setting_data.get('name', setting_key)}' removed from Quick Settings")
+        if hasattr(main_window, 'favorites_manager'):
+            if main_window.favorites_manager.is_favorite(setting_key):
+                main_window.favorites_manager.remove_favorite(setting_key)
+                QMessageBox.information(self, "Removed from Favorites", f"⭐ '{setting_data.get('name', setting_key)}' removed from Favorites")
             else:
-                main_window.pinned_manager.pin_setting(setting_key, setting_data)
-                QMessageBox.information(self, "Pinned", f"📌 '{setting_data.get('name', setting_key)}' added to Quick Settings")
+                main_window.favorites_manager.add_favorite(setting_key, setting_data)
+                QMessageBox.information(self, "Added to Favorites", f"⭐ '{setting_data.get('name', setting_key)}' added to Favorites")
             
             # Refresh Quick Settings tab if it exists
             if hasattr(main_window, 'quick_settings_tab'):
-                main_window.quick_settings_tab.refresh_pinned_settings()
+                main_window.quick_settings_tab.refresh_favorites()
 
 
 class InputTab(QWidget):
