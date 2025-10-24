@@ -1,8 +1,8 @@
 # FieldTuner Project Structure
 
-## 🎯 Clean, Professional Project Organization
+## 🎯 Clean, Concise Project Organization
 
-This document outlines the clean, organized structure of the FieldTuner project after removing all legacy files and focusing on the best, most up-to-date version.
+This document outlines the clean, organized structure of the FieldTuner project - a professional, self-contained Battlefield 6 configuration tool.
 
 ## 📁 Project Structure
 
@@ -11,7 +11,6 @@ FieldTuner/
 ├── 📁 src/                          # Main source code
 │   ├── main.py                      # Core application (MainWindow, all tabs)
 │   ├── settings_database.py         # BF6 settings database
-│   ├── backup_tab_clean.py          # Clean backup tab implementation
 │   └── debug.py                     # Debug utilities
 │
 ├── 📁 assets/                       # Application assets
@@ -24,11 +23,7 @@ FieldTuner/
 │   └── screenshots/                 # Screenshots for documentation
 │
 ├── 📁 docs/                         # Documentation
-│   ├── README.md                    # Main documentation
-│   ├── architecture.md              # Technical architecture
-│   ├── installation.md              # Installation guide
-│   ├── user-guide.md                # User guide
-│   └── api-reference.md             # API documentation
+│   └── README.md                    # Documentation index
 │
 ├── 📁 tests/                        # Test suite
 │   ├── test_config_manager.py       # Config manager tests
@@ -60,7 +55,6 @@ FieldTuner/
 ├── 📄 create_release.py             # Release creation script
 ├── 📄 CODE_OF_CONDUCT.md            # Code of conduct
 ├── 📄 CONTRIBUTING.md               # Contribution guidelines
-├── 📄 GITHUB_READY.md              # GitHub setup guide
 └── 📄 PROJECT_STRUCTURE.md          # This file
 ```
 
