@@ -2946,6 +2946,7 @@ class AdvancedTab(QWidget):
         """)
         
         self.settings_widget = QWidget()
+        self.settings_widget.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Maximum)  # Don't expand vertically
         self.settings_layout = QVBoxLayout(self.settings_widget)
         self.settings_layout.setContentsMargins(8, 8, 8, 8)
         self.settings_layout.setSpacing(8)
@@ -3020,8 +3021,10 @@ class AdvancedTab(QWidget):
             if not settings:
                 continue
                 
-            # Category header with consistent, readable styling
+            # Category header with consistent, readable styling and size constraints
             category_group = QGroupBox(f"📁 {category_name} ({len(settings)} settings)")
+            category_group.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Maximum)  # Don't expand vertically
+            category_group.setMaximumHeight(400)  # Limit maximum height to prevent excessive expansion
             category_group.setStyleSheet("""
                 QGroupBox {
                     font-weight: bold;
