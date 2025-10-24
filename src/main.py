@@ -3432,27 +3432,60 @@ class AdvancedTab(QWidget):
         layout.addStretch()
         
         # Star button for favorites
-        star_button = QPushButton("⭐")
-        star_button.setFixedSize(32, 32)
-        star_button.setStyleSheet("""
-            QPushButton {
-                background: rgba(255, 193, 7, 0.1);
-                border: 1px solid rgba(255, 193, 7, 0.3);
-                border-radius: 16px;
-                color: #ffc107;
-                font-size: 16px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background: rgba(255, 193, 7, 0.2);
-                border: 1px solid rgba(255, 193, 7, 0.5);
-                color: #ffd700;
-            }
-            QPushButton:pressed {
-                background: rgba(255, 193, 7, 0.3);
-            }
-        """)
-        star_button.setToolTip("Add to Favorites")
+        star_button = QPushButton("★")
+        star_button.setFixedSize(28, 28)
+        
+        # Check if this setting is already favorited
+        main_window = self.parent().parent().parent()
+        is_favorited = False
+        if hasattr(main_window, 'favorites_manager'):
+            is_favorited = main_window.favorites_manager.is_favorite(setting_key)
+        
+        # Set initial state
+        if is_favorited:
+            star_button.setText("★")
+            star_button.setStyleSheet("""
+                QPushButton {
+                    background: rgba(255, 193, 7, 0.2);
+                    border: 1px solid #ffc107;
+                    border-radius: 14px;
+                    color: #ffc107;
+                    font-size: 14px;
+                    font-weight: bold;
+                }
+                QPushButton:hover {
+                    background: rgba(255, 193, 7, 0.3);
+                    border: 1px solid #ffd700;
+                    color: #ffd700;
+                }
+                QPushButton:pressed {
+                    background: rgba(255, 193, 7, 0.4);
+                }
+            """)
+            star_button.setToolTip("Remove from Favorites")
+        else:
+            star_button.setText("☆")
+            star_button.setStyleSheet("""
+                QPushButton {
+                    background: transparent;
+                    border: 1px solid #666;
+                    border-radius: 14px;
+                    color: #888;
+                    font-size: 14px;
+                    font-weight: normal;
+                }
+                QPushButton:hover {
+                    background: rgba(255, 193, 7, 0.1);
+                    border: 1px solid #ffc107;
+                    color: #ffc107;
+                }
+                QPushButton:pressed {
+                    background: rgba(255, 193, 7, 0.2);
+                    color: #ffd700;
+                }
+            """)
+            star_button.setToolTip("Add to Favorites")
+        
         star_button.clicked.connect(lambda: self.toggle_favorite_setting(setting_key, setting_data))
         layout.addWidget(star_button)
         
@@ -3656,19 +3689,32 @@ class AdvancedTab(QWidget):
     
     def toggle_favorite_setting(self, setting_key, setting_data):
         """Toggle favorite status of a setting."""
+        log_debug(f"Toggle favorite clicked for: {setting_key}", "FAVORITES")
+        
         # Get the main window to access favorites manager
         main_window = self.parent().parent().parent()  # Navigate up to MainWindow
+        log_debug(f"Main window found: {main_window is not None}", "FAVORITES")
+        log_debug(f"Has favorites_manager: {hasattr(main_window, 'favorites_manager')}", "FAVORITES")
+        
         if hasattr(main_window, 'favorites_manager'):
             if main_window.favorites_manager.is_favorite(setting_key):
                 main_window.favorites_manager.remove_favorite(setting_key)
+                log_debug(f"Removed from favorites: {setting_key}", "FAVORITES")
                 QMessageBox.information(self, "Removed from Favorites", f"⭐ '{setting_data.get('name', setting_key)}' removed from Favorites")
             else:
                 main_window.favorites_manager.add_favorite(setting_key, setting_data)
+                log_debug(f"Added to favorites: {setting_key}", "FAVORITES")
                 QMessageBox.information(self, "Added to Favorites", f"⭐ '{setting_data.get('name', setting_key)}' added to Favorites")
             
             # Refresh Quick Settings tab if it exists
+            log_debug(f"Has quick_settings_tab: {hasattr(main_window, 'quick_settings_tab')}", "FAVORITES")
             if hasattr(main_window, 'quick_settings_tab'):
+                log_debug("Refreshing favorites in Quick Settings", "FAVORITES")
                 main_window.quick_settings_tab.refresh_favorites()
+            else:
+                log_debug("Quick Settings tab not found", "FAVORITES")
+        else:
+            log_debug("Favorites manager not found", "FAVORITES")
 
 
 class InputTab(QWidget):
