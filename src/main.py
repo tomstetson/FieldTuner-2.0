@@ -2199,27 +2199,43 @@ class MainWindow(QMainWindow):
         header_layout.addStretch()
         
         # Status info container
+        # Modern status banner with sleek design
         status_container = QWidget()
         status_container.setStyleSheet("""
             QWidget {
-                background-color: rgba(76, 175, 80, 0.2);
-                border-radius: 20px;
-                border: 2px solid #4CAF50;
-                padding: 8px 16px;
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                    stop:0 rgba(76, 175, 80, 0.15), stop:1 rgba(76, 175, 80, 0.25));
+                border: 1px solid rgba(76, 175, 80, 0.4);
+                border-radius: 12px;
+                padding: 0px;
             }
         """)
         
         status_layout = QHBoxLayout(status_container)
-        status_layout.setContentsMargins(0, 0, 0, 0)
-        status_layout.setSpacing(8)
+        status_layout.setContentsMargins(12, 8, 12, 8)
+        status_layout.setSpacing(10)
+        
+        # Status indicator dot
+        status_dot = QLabel("●")
+        status_dot.setStyleSheet("""
+            QLabel {
+                color: #4CAF50;
+                font-size: 12px;
+                background: transparent;
+                border: none;
+                padding: 0px;
+                margin: 0px;
+            }
+        """)
+        status_layout.addWidget(status_dot)
         
         # Status text (non-clickable)
         self.status_label = QLabel()
         self.status_label.setStyleSheet("""
             QLabel {
-                color: #4CAF50; 
-                font-size: 12px;
-                font-weight: bold;
+                color: #ffffff; 
+                font-size: 11px;
+                font-weight: 500;
                 background: transparent;
                 border: none;
                 padding: 0px;
@@ -2228,29 +2244,29 @@ class MainWindow(QMainWindow):
         """)
         status_layout.addWidget(self.status_label)
         
-        # Clickable folder icon
-        self.folder_icon = QLabel("📁")
+        # Modern clickable folder button
+        self.folder_icon = QLabel("📂")
         self.folder_icon.setStyleSheet("""
             QLabel {
                 color: #4CAF50;
-                font-size: 16px;
-                background: transparent;
-                border: none;
-                padding: 4px;
-                border-radius: 8px;
+                font-size: 14px;
+                background: rgba(76, 175, 80, 0.2);
+                border: 1px solid rgba(76, 175, 80, 0.5);
+                padding: 6px 8px;
+                border-radius: 6px;
                 cursor: pointer;
+                font-weight: bold;
             }
             QLabel:hover {
-                background-color: rgba(76, 175, 80, 0.4);
+                background: rgba(76, 175, 80, 0.3);
+                border: 1px solid rgba(76, 175, 80, 0.7);
                 color: #ffffff;
-                transform: scale(1.1);
             }
             QLabel:pressed {
-                background-color: rgba(76, 175, 80, 0.6);
-                color: #ffffff;
+                background: rgba(76, 175, 80, 0.5);
+                border: 1px solid rgba(76, 175, 80, 0.9);
             }
         """)
-        # Make only the folder icon clickable
         self.folder_icon.mousePressEvent = self.open_config_directory
         self.folder_icon.setToolTip("Click to open Battlefield 6 config directory")
         status_layout.addWidget(self.folder_icon)
