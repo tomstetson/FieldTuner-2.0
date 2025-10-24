@@ -1,156 +1,178 @@
-# 🎮 FieldTuner - World-Class Battlefield 6 Configuration Tool
+# FieldTuner - Battlefield 6 Configuration Tool
 
-A stunning, professional GUI application for managing Battlefield 6 configuration files with optimal settings recommendations and world-class user experience.
+<div align="center">
 
-## ✨ Features
+![FieldTuner Logo](assets/icon.ico)
 
-### 🎯 **World-Class Design**
-- **Stunning Visual Interface** - Modern gradient headers, beautiful cards, and professional styling
-- **Intuitive Navigation** - Clean tabbed interface with emoji icons and clear labels
-- **Responsive Layout** - Adapts beautifully to different screen sizes
-- **Professional Color Scheme** - Battlefield-style orange accents with dark theme
+**A comprehensive, world-class tool for managing Battlefield 6 settings with an intuitive interface and powerful features.**
 
-### ⚡ **Quick Settings**
-- **Performance Presets** - One-click Competitive, Balanced, and Quality presets
-- **Smart Recommendations** - Research-based optimal settings for different gaming scenarios
-- **Quick Toggles** - DirectX 12, VSync, Motion Blur, Ambient Occlusion with descriptions
-- **Resolution Scale** - Visual slider with real-time percentage display
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![PyQt6](https://img.shields.io/badge/PyQt6-6.5+-green.svg)](https://pypi.org/project/PyQt6/)
+[![Windows](https://img.shields.io/badge/Windows-10%2F11-blue.svg)](https://www.microsoft.com/windows)
 
-### 🎨 **Graphics Settings**
-- **Display Settings** - Fullscreen mode, aspect ratio selection
-- **Quality Settings** - Texture, Shadow, Effects, Mesh, Lighting, Post-Process quality
-- **Visual Effects** - Anti-aliasing, Ray tracing options
-- **Beautiful Forms** - Clean, organized settings with logical grouping
+</div>
 
-### 💻 **Code View**
-- **Direct Config Editing** - Syntax-highlighted editor for advanced users
-- **Real-time Editing** - Edit the actual config file directly
-- **Monospace Font** - Professional code editor styling
-- **Reload Functionality** - Refresh from disk with one click
+## 🎯 Overview
 
-### 💾 **Backup Management**
-- **Visual Backup List** - Beautiful list with timestamps and file sizes
-- **One-Click Operations** - Create, restore, and delete backups easily
-- **Confirmation Dialogs** - Safe operations with user-friendly messages
-- **Automatic Timestamps** - Organized backups with creation dates
+FieldTuner is a professional-grade configuration tool designed specifically for Battlefield 6. It provides an intuitive, WeMod-inspired interface for managing all aspects of your game settings, from graphics optimization to advanced technical configurations.
+
+### ✨ Key Features
+
+- 🎮 **Automatic Config Detection** - Finds your BF6 config files automatically
+- ⚡ **Quick Settings Presets** - 5 optimized presets for different playstyles
+- 🖥️ **Graphics Management** - Comprehensive graphics settings control
+- 💾 **Smart Backup System** - Automatic backups with easy restoration
+- 🔧 **Advanced Settings** - Technical settings with user-friendly descriptions
+- 🐛 **Debug Tools** - Real-time logging and troubleshooting
+- 🚀 **Portable Design** - No installation required, runs anywhere
 
 ## 🚀 Quick Start
 
-### Method 1: Run Main Application
+### 📦 Portable Version (Recommended)
+
+1. **Download** the latest release from [Releases](https://github.com/tomstetson/fieldtuner/releases)
+2. **Extract** the ZIP file to any folder
+3. **Run** `Run_FieldTuner.bat` as administrator
+4. **Start** configuring your Battlefield 6 settings!
+
+### 🔧 From Source Code
+
 ```bash
-python main.py
+# Clone the repository
+git clone https://github.com/tomstetson/fieldtuner.git
+cd fieldtuner
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the application
+python src/main.py
 ```
 
-### Method 2: Use Launcher Script
-```bash
-FieldTuner.bat
-```
+## 🎮 Quick Settings Presets
 
-### Method 3: Build Executable
-```bash
-python build.py
-```
+| Preset | Description | Use Case |
+|--------|-------------|----------|
+| **Esports Pro** | Maximum performance for competitive play | Professional gaming, tournaments |
+| **Competitive** | Balanced performance and quality | Ranked matches, competitive play |
+| **Balanced** | Good performance with decent quality | Casual gaming, mixed use |
+| **Quality** | High quality settings | Single-player, cinematic experience |
+| **Performance** | Maximum performance settings | Low-end hardware, high FPS |
 
-## 🎯 Optimal Settings Presets
+## 🛡️ Safety & Reliability
 
-### 🏆 **Competitive Gaming**
-- **DirectX 12**: Enabled for better performance
-- **VSync**: Disabled for lower input lag
-- **Motion Blur**: Disabled for clarity
-- **Anti-Aliasing**: Minimal for maximum FPS
-- **All Quality Settings**: Optimized for competitive play
-
-### ⚖️ **Balanced Gaming**
-- **Good Performance**: Balanced quality/performance ratio
-- **Visual Effects**: Some effects enabled for nice visuals
-- **Moderate Quality**: Perfect for most systems
-- **Smooth Gameplay**: Great for casual and ranked play
-
-### 🎨 **Visual Quality**
-- **Maximum Fidelity**: All visual effects enabled
-- **High Quality**: Maximum quality settings
-- **Ray Tracing**: Enabled for stunning visuals
-- **For High-End Systems**: Requires powerful hardware
+- ✅ **Automatic Backups** - Creates backups before any changes
+- ✅ **Confirmation Dialogs** - Prevents accidental modifications
+- ✅ **Error Recovery** - Robust error handling and recovery
+- ✅ **Comprehensive Logging** - Detailed logs for troubleshooting
+- ✅ **Admin Privileges** - Secure file modification with proper permissions
 
 ## 📁 Project Structure
 
+### Clean Organization
 ```
 FieldTuner/
-├── 📄 main.py                 # Main application (world-class GUI)
-├── 📄 build.py               # Build script for executable
-├── 📄 FieldTuner.bat         # Windows launcher
-├── 📄 requirements.txt       # Python dependencies
-├── 📄 README.md              # This documentation
-├── 📁 src/                   # Source code
-├── 📁 scripts/               # Build and utility scripts
-├── 📁 tests/                 # Test files
-├── 📁 docs/                  # Documentation
-├── 📁 build/                 # Build artifacts
-├── 📁 releases/              # Release builds
-├── 📁 assets/                # Application assets
-├── 📁 core/                  # Core modules
-├── 📁 gui/                   # GUI modules
-└── 📁 dist/                  # Distribution files
+├── 📁 src/                          # Main source code
+│   ├── main.py                      # Core application
+│   ├── settings_database.py         # BF6 settings database
+│   └── backup_tab_clean.py          # Clean backup implementation
+├── 📁 assets/                       # Application assets
+├── 📁 docs/                         # Documentation
+├── 📁 tests/                        # Test suite
+├── 📁 installer/                    # Installation system
+└── 📁 releases/                     # Release packages
 ```
 
-## 🛡️ Safety Features
+### Config File Locations
+FieldTuner automatically detects config files in:
+- `%USERPROFILE%\Documents\Battlefield 6\settings\steam\PROFSAVE_profile`
+- `%USERPROFILE%\Documents\Battlefield 6\settings\PROFSAVE_profile`
+- `%USERPROFILE%\OneDrive\Documents\Battlefield 6\settings\steam\PROFSAVE_profile`
 
-- **Automatic Backups** - Created on first run with timestamps
-- **Confirmation Dialogs** - Safe operations with user-friendly messages
-- **File Validation** - Checks before destructive operations
-- **Error Handling** - Comprehensive error messages and recovery
-- **Real-time Status** - Live feedback in status bar
+### Data Storage
+- **Backups**: `%APPDATA%\FieldTuner\backups\`
+- **Logs**: `%APPDATA%\FieldTuner\logs\`
+- **Settings**: Portable data storage
 
-## 📋 Requirements
+## 🆘 Troubleshooting
 
-- **Python 3.8+** - Modern Python version
-- **PyQt6** - GUI framework
-- **Windows 10/11** - Operating system
-- **Battlefield 6** - Game installation
+### Common Issues
 
-## 🔧 Installation
+#### "Config file not found"
+- ✅ Make sure Battlefield 6 is installed
+- ✅ Run the game at least once to create config files
+- ✅ Check that config files exist in your Documents folder
 
-1. **Clone or Download** this repository
-2. **Install Dependencies**: `pip install -r requirements.txt`
-3. **Run Application**: `python main.py`
+#### "Permission denied"
+- ✅ Run FieldTuner as administrator
+- ✅ Ensure you have administrator privileges
+- ✅ Use the batch file launcher
 
-## 🎮 Supported Config Files
+#### "Application won't start"
+- ✅ Check that all dependencies are installed
+- ✅ Verify Python version (3.11+)
+- ✅ Use the portable executable version
 
-- **Steam**: `%USERPROFILE%\Documents\Battlefield 6\settings\steam\PROFSAVE_profile`
-- **EA App**: `%USERPROFILE%\Documents\Battlefield 6\settings\PROFSAVE_profile`
-- **OneDrive Steam**: `%USERPROFILE%\OneDrive\Documents\Battlefield 6\settings\steam\PROFSAVE_profile`
-- **OneDrive EA App**: `%USERPROFILE%\OneDrive\Documents\Battlefield 6\settings\PROFSAVE_profile`
+### Debug Mode
+1. Open the **Debug** tab in FieldTuner
+2. Check the real-time logs for error messages
+3. Look for specific error patterns
+4. Report issues with log details
 
-## 🚀 Development
+## 🤝 Contributing
 
-### Building Executable
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+
+### Development Setup
 ```bash
-python build.py
+# Clone the repository
+git clone https://github.com/tomstetson/fieldtuner.git
+cd fieldtuner
+
+# Install development dependencies
+pip install -r requirements-dev.txt
+
+# Install pre-commit hooks
+pre-commit install
+
+# Run tests
+python -m pytest tests/ -v
 ```
 
-### Testing
-```bash
-python tests/test_core.py
-```
+## 📚 Documentation
 
-## 🎯 Key Improvements
+- 📖 **[Installation Guide](docs/installation.md)** - Detailed installation instructions
+- 🏗️ **[Architecture](docs/architecture.md)** - System architecture overview
+- 🧪 **[Testing](docs/testing.md)** - Testing guidelines and procedures
+- 🔧 **[API Reference](docs/api-reference.md)** - Complete API documentation
 
-1. **🎨 World-Class Design** - Stunning visual interface with gradients and animations
-2. **⚡ Smart Presets** - Research-based optimal settings for different scenarios
-3. **💻 Direct Editing** - Code view for advanced users
-4. **💾 Professional Backups** - Visual backup management with timestamps
-5. **🛡️ Enhanced Safety** - Comprehensive error handling and validation
-6. **📱 Intuitive UX** - Easy-to-use interface with clear navigation
+## 🏆 Project Status
 
-## 🔄 Version History
+- ✅ **Core Features** - Complete and tested
+- ✅ **UI/UX** - Professional, WeMod-inspired design
+- ✅ **Backup System** - Robust backup and restore functionality
+- ✅ **Portable Build** - Self-contained executable ready
+- ✅ **Documentation** - Comprehensive guides and API docs
+- ✅ **Testing** - Full test coverage with automated CI/CD
 
-- **v2.0.0** - World-class UI overhaul with stunning design and optimal settings
-- **v1.0.0** - Initial release with basic GUI functionality
+## 📄 License
 
-## 📞 Support
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-For issues or questions, please check the documentation in the `docs/` folder or create an issue in the project repository.
+## 🙏 Acknowledgments
+
+- **Nobody621** - For the idea
+- **PyQt6** - For the excellent GUI framework
+- **Python Community** - For the amazing ecosystem
+- **Cursor** - For the incredible AI-powered development experience
 
 ---
 
-**FieldTuner** - Professional Battlefield 6 Configuration Management with World-Class Design 🎮✨
+<div align="center">
+
+**Created by Tom with Love from Cursor** ❤️
+
+*Making Battlefield 6 configuration as smooth as butter*
+
+</div>

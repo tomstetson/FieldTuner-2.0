@@ -1,2 +1,14 @@
+# FieldTuner Requirements
+# Core GUI framework
 PyQt6>=6.4.0
+
+# Executable building
 pyinstaller>=6.0.0
+
+# Path handling (Python 3.8+ compatibility)
+pathlib2==2.3.7
+
+# Development dependencies (optional)
+pytest>=7.0.0
+black>=22.0.0
+flake8>=4.0.0
