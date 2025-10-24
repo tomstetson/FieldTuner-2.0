@@ -20,7 +20,7 @@ from PyQt6.QtWidgets import (
     QListWidget, QListWidgetItem, QFrame, QScrollArea, QPlainTextEdit,
     QPushButton, QLineEdit, QFormLayout, QButtonGroup, QRadioButton,
     QStackedWidget, QSizePolicy, QSpacerItem, QLayout, QDialog,
-    QDialogButtonBox, QTextBrowser
+    QDialogButtonBox, QTextBrowser, QAbstractItemView
 )
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal, QThread, QSize
 from PyQt6.QtGui import QFont, QIcon, QPalette, QColor, QTextCursor, QPixmap, QPainter, QLinearGradient
