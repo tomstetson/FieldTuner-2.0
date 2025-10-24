@@ -1600,8 +1600,9 @@ class BackupTab(QWidget):
         backups_layout.setContentsMargins(12, 8, 12, 8)
         backups_layout.setSpacing(8)
 
-        # Backup list with proper styling
+        # Backup list with proper styling and multi-select
         self.backup_list = QListWidget()
+        self.backup_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)  # Enable multi-select
         self.backup_list.setStyleSheet("""
             QListWidget {
                 background-color: #333;
@@ -1656,7 +1657,7 @@ class BackupTab(QWidget):
         self.restore_btn.setEnabled(False)
         action_layout.addWidget(self.restore_btn)
 
-        # Delete selected button
+        # Delete selected button (supports multi-select)
         self.delete_btn = QPushButton("Delete Selected")
         self.delete_btn.setStyleSheet("""
             QPushButton {
@@ -1676,7 +1677,7 @@ class BackupTab(QWidget):
                 color: #999;
             }
         """)
-        self.delete_btn.clicked.connect(self.delete_selected_backup)
+        self.delete_btn.clicked.connect(self.delete_selected_backups)
         self.delete_btn.setEnabled(False)
         action_layout.addWidget(self.delete_btn)
 
@@ -1816,36 +1817,54 @@ class BackupTab(QWidget):
             except Exception as e:
                 QMessageBox.critical(self, "Restore Failed", f"❌ Failed to restore backup: {str(e)}")
     
-    def delete_selected_backup(self):
-        """Delete the selected backup."""
-        current_item = self.backup_list.currentItem()
-        if not current_item:
-            QMessageBox.warning(self, "No Selection", "❌ Please select a backup to delete!")
+    def delete_selected_backups(self):
+        """Delete the selected backups (supports multi-select)."""
+        selected_items = self.backup_list.selectedItems()
+        if not selected_items:
+            QMessageBox.warning(self, "No Selection", "❌ Please select backup(s) to delete!")
             return
         
-        backup_file = current_item.data(Qt.ItemDataRole.UserRole)
-        if not backup_file or not backup_file.exists():
-            QMessageBox.warning(self, "Error", "❌ Selected backup file not found!")
+        # Get backup files
+        backup_files = []
+        for item in selected_items:
+            backup_file = item.data(Qt.ItemDataRole.UserRole)
+            if backup_file and backup_file.exists():
+                backup_files.append(backup_file)
+        
+        if not backup_files:
+            QMessageBox.warning(self, "Error", "❌ Selected backup files not found!")
             return
+        
+        # Confirmation dialog
+        if len(backup_files) == 1:
+            message = f"🗑️ Are you sure you want to delete this backup?\n\n📁 File: {backup_files[0].name}\n\n⚠️ This action cannot be undone!"
+        else:
+            file_list = "\n".join([f"• {f.name}" for f in backup_files])
+            message = f"🗑️ Are you sure you want to delete {len(backup_files)} backups?\n\n📁 Files:\n{file_list}\n\n⚠️ This action cannot be undone!"
         
         reply = QMessageBox.question(
             self, 
-            "Delete Backup",
-            f"🗑️ Are you sure you want to delete this backup?\n\n"
-            f"📁 File: {backup_file.name}\n"
-            f"📅 Date: {current_item.text()}\n\n"
-            f"⚠️ This action cannot be undone!",
+            "Delete Backup(s)",
+            message,
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No
         )
         
         if reply == QMessageBox.StandardButton.Yes:
             try:
-                backup_file.unlink()
-                QMessageBox.information(self, "Backup Deleted", "✅ Backup deleted successfully!")
+                deleted_count = 0
+                for backup_file in backup_files:
+                    backup_file.unlink()
+                    deleted_count += 1
+                
+                if deleted_count == 1:
+                    QMessageBox.information(self, "Backup Deleted", "✅ Backup deleted successfully!")
+                else:
+                    QMessageBox.information(self, "Backups Deleted", f"✅ {deleted_count} backups deleted successfully!")
+                
                 self.refresh_backups()
             except Exception as e:
-                QMessageBox.critical(self, "Delete Failed", f"❌ Failed to delete backup: {str(e)}")
+                QMessageBox.critical(self, "Delete Failed", f"❌ Failed to delete backup(s): {str(e)}")
     
     def open_backup_folder(self):
         """Open the backup folder in file explorer."""
@@ -1859,9 +1878,21 @@ class BackupTab(QWidget):
     
     def update_backup_buttons(self):
         """Update backup action buttons based on selection."""
-        has_selection = self.backup_list.currentItem() is not None
-        self.restore_btn.setEnabled(has_selection)
-        self.delete_btn.setEnabled(has_selection)
+        selected_items = self.backup_list.selectedItems()
+        has_selection = len(selected_items) > 0
+        
+        # Update button states
+        self.restore_btn.setEnabled(has_selection and len(selected_items) == 1)  # Only single restore
+        self.delete_btn.setEnabled(has_selection)  # Multi-delete supported
+        
+        # Update button text based on selection count
+        if has_selection:
+            if len(selected_items) == 1:
+                self.delete_btn.setText("Delete Selected")
+            else:
+                self.delete_btn.setText(f"Delete {len(selected_items)} Selected")
+        else:
+            self.delete_btn.setText("Delete Selected")
 class DebugTab(QWidget):
     """Debug tab for real-time log viewing."""
     
@@ -2349,8 +2380,8 @@ class MainWindow(QMainWindow):
             settings_count = len(self.config_manager.config_data)
             backup_count = len(list(self.config_manager.BACKUP_DIR.glob("*.bak"))) if self.config_manager.BACKUP_DIR.exists() else 0
             
-            # Show clear connection status
-            self.status_label.setText(f"✅ Connected to BF6 Config • 📁 {self.config_manager.config_path.name} • 📊 {file_size:,} bytes • ⚙️ {settings_count} settings • 💾 {backup_count} backups")
+            # Show clear connection status with clickable indicator
+            self.status_label.setText(f"✅ Config File Loaded • 📁 {self.config_manager.config_path.name} • 📊 {file_size:,} bytes • ⚙️ {settings_count} settings • 💾 {backup_count} backups")
             self.status_label.setStyleSheet("""
                 color: #4CAF50; 
                 font-size: 12px;
@@ -2358,7 +2389,10 @@ class MainWindow(QMainWindow):
                 padding: 6px 12px;
                 border-radius: 15px;
                 border: 1px solid #4CAF50;
+                cursor: pointer;
             """)
+            # Make it clickable
+            self.status_label.mousePressEvent = self.open_config_directory
         else:
             self.status_label.setText("❌ No Battlefield 6 config file found - Please check your game installation")
             self.status_label.setStyleSheet("""
@@ -2572,6 +2606,20 @@ class MainWindow(QMainWindow):
         """Clear all pending changes."""
         self.pending_changes.clear()
         self.changes_feedback.hide()
+    
+    def open_config_directory(self, event):
+        """Open the Battlefield 6 config directory in file explorer."""
+        if self.config_manager.config_path and self.config_manager.config_path.exists():
+            try:
+                import subprocess
+                config_dir = str(self.config_manager.config_path.parent)
+                subprocess.run(f'explorer "{config_dir}"', shell=True, check=False)
+                log_info(f"Opened config directory: {config_dir}", "MAIN")
+            except Exception as e:
+                log_error(f"Failed to open config directory: {str(e)}", "MAIN", e)
+                QMessageBox.warning(self, "Error", f"❌ Failed to open config directory: {str(e)}")
+        else:
+            QMessageBox.warning(self, "No Config", "❌ No Battlefield 6 config file found!")
 
 
 class AdvancedTab(QWidget):
