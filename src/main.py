@@ -3024,27 +3024,8 @@ class AdvancedTab(QWidget):
             is_single_setting = len(settings) == 1
             category_group = QGroupBox(f"📁 {category_name} ({len(settings)} settings)")
             
-            # Different styling for single vs multiple settings
+            # Better styling for readability
             if is_single_setting:
-                category_group.setStyleSheet("""
-                    QGroupBox {
-                        font-weight: bold;
-                        color: #ffffff;
-                        border: 1px solid #4a90e2;
-                        border-radius: 4px;
-                        margin-top: 2px;
-                        padding-top: 4px;
-                        background-color: #2a2a2a;
-                        max-height: 80px;
-                    }
-                    QGroupBox::title {
-                        subcontrol-origin: margin;
-                        left: 6px;
-                        padding: 0 4px 0 4px;
-                        font-size: 11px;
-                    }
-                """)
-            else:
                 category_group.setStyleSheet("""
                     QGroupBox {
                         font-weight: bold;
@@ -3054,7 +3035,7 @@ class AdvancedTab(QWidget):
                         margin-top: 4px;
                         padding-top: 8px;
                         background-color: #2a2a2a;
-                        max-height: 200px;
+                        max-height: 120px;
                     }
                     QGroupBox::title {
                         subcontrol-origin: margin;
@@ -3063,14 +3044,33 @@ class AdvancedTab(QWidget):
                         font-size: 12px;
                     }
                 """)
+            else:
+                category_group.setStyleSheet("""
+                    QGroupBox {
+                        font-weight: bold;
+                        color: #ffffff;
+                        border: 1px solid #4a90e2;
+                        border-radius: 6px;
+                        margin-top: 6px;
+                        padding-top: 10px;
+                        background-color: #2a2a2a;
+                        max-height: 300px;
+                    }
+                    QGroupBox::title {
+                        subcontrol-origin: margin;
+                        left: 10px;
+                        padding: 0 8px 0 8px;
+                        font-size: 13px;
+                    }
+                """)
             
             category_layout = QVBoxLayout(category_group)
             if is_single_setting:
-                category_layout.setContentsMargins(4, 4, 4, 4)  # Very tight margins for single settings
-                category_layout.setSpacing(2)  # Very tight spacing
+                category_layout.setContentsMargins(8, 8, 8, 8)  # Better margins for readability
+                category_layout.setSpacing(4)  # Better spacing
             else:
-                category_layout.setContentsMargins(8, 8, 8, 8)  # Tighter margins
-                category_layout.setSpacing(4)  # Tighter spacing
+                category_layout.setContentsMargins(10, 10, 10, 10)  # Good margins
+                category_layout.setSpacing(6)  # Good spacing
             
             # Add settings for this category
             for setting_key, setting_data in sorted(settings, key=lambda x: x[1].get("name", "")):
@@ -3128,14 +3128,14 @@ class AdvancedTab(QWidget):
         widget.setStyleSheet("""
             QWidget {
                 background-color: #333;
-                border-radius: 4px;
-                padding: 6px;
-                margin: 1px;
+                border-radius: 6px;
+                padding: 12px;
+                margin: 2px;
             }
         """)
         
         layout = QHBoxLayout(widget)
-        layout.setContentsMargins(6, 6, 6, 6)  # Tighter margins
+        layout.setContentsMargins(12, 12, 12, 12)  # Better margins for readability
         
         # Setting name and description
         info_layout = QVBoxLayout()
@@ -3144,14 +3144,14 @@ class AdvancedTab(QWidget):
         name_label.setStyleSheet("""
             font-weight: bold;
             color: #ffffff;
-            font-size: 12px;
+            font-size: 14px;
         """)
         info_layout.addWidget(name_label)
         
         desc_label = QLabel(setting_data.get("description", ""))
         desc_label.setStyleSheet("""
             color: #cccccc;
-            font-size: 10px;
+            font-size: 12px;
         """)
         desc_label.setWordWrap(True)
         info_layout.addWidget(desc_label)
