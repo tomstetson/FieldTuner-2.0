@@ -2550,7 +2550,7 @@ class MainWindow(QMainWindow):
         self.quick_tab = QuickSettingsTab(self.config_manager)
         self.graphics_tab = GraphicsTab(self.config_manager)
         self.input_tab = InputTab(self.config_manager)
-        self.advanced_tab = AdvancedTab(self.config_manager)
+        self.advanced_tab = AdvancedTab(self.config_manager, self)
         self.code_tab = CodeViewTab(self.config_manager)
         self.backup_tab = BackupTab(self.config_manager)
         self.debug_tab = DebugTab(self.config_manager)
@@ -3103,9 +3103,10 @@ class MainWindow(QMainWindow):
 class AdvancedTab(QWidget):
     """Advanced Settings Tab - Clean, searchable interface for all BF6 settings."""
     
-    def __init__(self, config_manager):
+    def __init__(self, config_manager, main_window=None):
         super().__init__()
         self.config_manager = config_manager
+        self.main_window = main_window
         self.all_settings = {}  # Store all settings for search
         self.setup_ui()
         self.load_settings()
@@ -3436,10 +3437,9 @@ class AdvancedTab(QWidget):
         star_button.setFixedSize(28, 28)
         
         # Check if this setting is already favorited
-        main_window = self.parent().parent().parent()
         is_favorited = False
-        if hasattr(main_window, 'favorites_manager'):
-            is_favorited = main_window.favorites_manager.is_favorite(setting_key)
+        if self.main_window and hasattr(self.main_window, 'favorites_manager'):
+            is_favorited = self.main_window.favorites_manager.is_favorite(setting_key)
         
         # Set initial state
         if is_favorited:
@@ -3691,26 +3691,25 @@ class AdvancedTab(QWidget):
         """Toggle favorite status of a setting."""
         log_debug(f"Toggle favorite clicked for: {setting_key}", "FAVORITES")
         
-        # Get the main window to access favorites manager
-        main_window = self.parent().parent().parent()  # Navigate up to MainWindow
-        log_debug(f"Main window found: {main_window is not None}", "FAVORITES")
-        log_debug(f"Has favorites_manager: {hasattr(main_window, 'favorites_manager')}", "FAVORITES")
+        # Use the main window reference directly
+        log_debug(f"Main window found: {self.main_window is not None}", "FAVORITES")
+        log_debug(f"Has favorites_manager: {hasattr(self.main_window, 'favorites_manager') if self.main_window else False}", "FAVORITES")
         
-        if hasattr(main_window, 'favorites_manager'):
-            if main_window.favorites_manager.is_favorite(setting_key):
-                main_window.favorites_manager.remove_favorite(setting_key)
+        if self.main_window and hasattr(self.main_window, 'favorites_manager'):
+            if self.main_window.favorites_manager.is_favorite(setting_key):
+                self.main_window.favorites_manager.remove_favorite(setting_key)
                 log_debug(f"Removed from favorites: {setting_key}", "FAVORITES")
                 QMessageBox.information(self, "Removed from Favorites", f"⭐ '{setting_data.get('name', setting_key)}' removed from Favorites")
             else:
-                main_window.favorites_manager.add_favorite(setting_key, setting_data)
+                self.main_window.favorites_manager.add_favorite(setting_key, setting_data)
                 log_debug(f"Added to favorites: {setting_key}", "FAVORITES")
                 QMessageBox.information(self, "Added to Favorites", f"⭐ '{setting_data.get('name', setting_key)}' added to Favorites")
             
             # Refresh Quick Settings tab if it exists
-            log_debug(f"Has quick_settings_tab: {hasattr(main_window, 'quick_settings_tab')}", "FAVORITES")
-            if hasattr(main_window, 'quick_settings_tab'):
+            log_debug(f"Has quick_settings_tab: {hasattr(self.main_window, 'quick_settings_tab')}", "FAVORITES")
+            if hasattr(self.main_window, 'quick_settings_tab'):
                 log_debug("Refreshing favorites in Quick Settings", "FAVORITES")
-                main_window.quick_settings_tab.refresh_favorites()
+                self.main_window.quick_settings_tab.refresh_favorites()
             else:
                 log_debug("Quick Settings tab not found", "FAVORITES")
         else:
