@@ -2149,6 +2149,47 @@ class MainWindow(QMainWindow):
         
         main_layout.addWidget(self.tab_widget)
         
+        # Changes feedback section
+        self.changes_feedback = QWidget()
+        self.changes_feedback.setFixedHeight(60)
+        self.changes_feedback.setStyleSheet("""
+            QWidget {
+                background-color: #1a3d5c;
+                border: 2px solid #4a90e2;
+                border-radius: 6px;
+                margin: 5px;
+            }
+        """)
+        
+        changes_layout = QVBoxLayout(self.changes_feedback)
+        changes_layout.setContentsMargins(12, 8, 12, 8)
+        changes_layout.setSpacing(4)
+        
+        # Changes header
+        self.changes_header = QLabel("📝 Here's what you're changing:")
+        self.changes_header.setStyleSheet("""
+            color: #4a90e2;
+            font-size: 12px;
+            font-weight: bold;
+        """)
+        changes_layout.addWidget(self.changes_header)
+        
+        # Changes list
+        self.changes_list = QLabel("No changes made yet")
+        self.changes_list.setStyleSheet("""
+            color: #ffffff;
+            font-size: 11px;
+            background-color: rgba(74, 144, 226, 0.1);
+            padding: 4px 8px;
+            border-radius: 3px;
+        """)
+        self.changes_list.setWordWrap(True)
+        changes_layout.addWidget(self.changes_list)
+        
+        # Initially hide the feedback
+        self.changes_feedback.hide()
+        main_layout.addWidget(self.changes_feedback)
+        
         # Action buttons
         button_widget = QWidget()
         button_widget.setFixedHeight(70)
@@ -2177,6 +2218,12 @@ class MainWindow(QMainWindow):
             }
         """)
         self.apply_btn.clicked.connect(self.apply_changes)
+        
+        # Initialize changes tracking
+        self.pending_changes = {}
+        
+        # Connect to tab change signals to track changes
+        self.tab_widget.currentChanged.connect(self.on_tab_changed)
         
         self.reset_btn = QPushButton("🏭 Reset to Factory")
         self.reset_btn.setStyleSheet("""
@@ -2462,6 +2509,9 @@ class MainWindow(QMainWindow):
                 self.status_bar.showMessage("✅ Changes applied successfully!")
                 QMessageBox.information(self, "Success", "✅ Configuration changes have been applied successfully!")
                 log_info("Configuration changes applied successfully", "MAIN")
+                
+                # Clear pending changes after successful save
+                self.clear_pending_changes()
             else:
                 self.status_bar.showMessage("❌ Failed to apply changes!")
                 QMessageBox.critical(self, "Error", "❌ Failed to save configuration changes!")
@@ -2580,6 +2630,65 @@ class MainWindow(QMainWindow):
                 "✅ All settings have been reset to Battlefield 6 factory defaults!\n\n"
                 "💾 A backup of your previous settings has been created."
             )
+    
+    def on_tab_changed(self, index):
+        """Handle tab changes and update change tracking."""
+        self.update_changes_feedback()
+    
+    def track_setting_change(self, setting_key, old_value, new_value):
+        """Track a setting change for feedback display."""
+        if old_value != new_value:
+            self.pending_changes[setting_key] = {
+                'old': old_value,
+                'new': new_value
+            }
+        else:
+            # Remove from pending changes if value is back to original
+            self.pending_changes.pop(setting_key, None)
+        
+        self.update_changes_feedback()
+    
+    def update_changes_feedback(self):
+        """Update the changes feedback display."""
+        if not self.pending_changes:
+            self.changes_feedback.hide()
+            return
+        
+        # Show the feedback section
+        self.changes_feedback.show()
+        
+        # Build changes list
+        changes_text = []
+        for setting_key, change in self.pending_changes.items():
+            # Format the setting name for display
+            display_name = setting_key.replace('GstRender.', '').replace('GstInput.', '')
+            display_name = display_name.replace('.', ' ').title()
+            
+            old_val = str(change['old'])
+            new_val = str(change['new'])
+            
+            # Truncate long values
+            if len(old_val) > 20:
+                old_val = old_val[:17] + "..."
+            if len(new_val) > 20:
+                new_val = new_val[:17] + "..."
+            
+            changes_text.append(f"• {display_name}: {old_val} → {new_val}")
+        
+        # Update the display
+        if len(changes_text) <= 3:
+            self.changes_list.setText("\n".join(changes_text))
+        else:
+            self.changes_list.setText("\n".join(changes_text[:3]) + f"\n... and {len(changes_text) - 3} more changes")
+        
+        # Update header with count
+        count = len(self.pending_changes)
+        self.changes_header.setText(f"📝 Here's what you're changing ({count} setting{'s' if count != 1 else ''}):")
+    
+    def clear_pending_changes(self):
+        """Clear all pending changes."""
+        self.pending_changes.clear()
+        self.changes_feedback.hide()
 
 
 class AdvancedTab(QWidget):
@@ -2948,9 +3057,18 @@ class AdvancedTab(QWidget):
             return line_edit
     
     def update_setting(self, setting_key, value):
-        """Update a setting value."""
+        """Update a setting value and track changes."""
         try:
+            # Get the old value for tracking
+            old_value = self.config_manager.get_setting(setting_key)
+            
+            # Update the setting
             self.config_manager.set_setting(setting_key, value)
+            
+            # Track the change in the main window
+            if hasattr(self.parent(), 'track_setting_change'):
+                self.parent().track_setting_change(setting_key, old_value, value)
+            
             self.status_label.setText(f"Updated {setting_key} = {value}")
             log_info(f"Advanced setting updated: {setting_key} = {value}", "ADVANCED")
         except Exception as e:
@@ -3670,9 +3788,18 @@ class InputTab(QWidget):
         pass
     
     def update_setting(self, key, value):
-        """Update a setting value."""
+        """Update a setting value and track changes."""
         try:
+            # Get the old value for tracking
+            old_value = self.config_manager.get_setting(key)
+            
+            # Update the setting
             self.config_manager.set_setting(key, value)
+            
+            # Track the change in the main window
+            if hasattr(self.parent(), 'track_setting_change'):
+                self.parent().track_setting_change(key, old_value, value)
+            
             self.status_label.setText(f"Updated {key} = {value}")
             log_info(f"Input setting updated: {key} = {value}", "INPUT")
         except Exception as e:
