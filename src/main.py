@@ -1228,6 +1228,8 @@ class QuickSettingsTab(QWidget):
     
     def refresh_favorites(self):
         """Refresh the favorites section."""
+        log_debug("Refreshing favorites in Quick Settings", "FAVORITES")
+        
         # This will be called when settings are favorited/unfavorited
         if hasattr(self, 'favorites_group'):
             # Clear existing favorites
@@ -1236,13 +1238,33 @@ class QuickSettingsTab(QWidget):
                 if child:
                     child.setParent(None)
             
-            # Get main window's favorites manager
-            main_window = self.parent().parent().parent()
-            if hasattr(main_window, 'favorites_manager'):
+            # Get main window's favorites manager - try multiple ways to find it
+            main_window = None
+            
+            # Try to get main window from parent hierarchy
+            current = self.parent()
+            while current and not hasattr(current, 'favorites_manager'):
+                current = current.parent()
+            
+            if current and hasattr(current, 'favorites_manager'):
+                main_window = current
+                log_debug("Found main window via parent hierarchy", "FAVORITES")
+            else:
+                # Try alternative approach - look for main window in application
+                from PyQt6.QtWidgets import QApplication
+                for widget in QApplication.allWidgets():
+                    if hasattr(widget, 'favorites_manager'):
+                        main_window = widget
+                        log_debug("Found main window via QApplication", "FAVORITES")
+                        break
+            
+            if main_window and hasattr(main_window, 'favorites_manager'):
                 favorite_settings = main_window.favorites_manager.get_favorites()
+                log_debug(f"Found {len(favorite_settings)} favorite settings", "FAVORITES")
                 
                 if favorite_settings:
                     for setting_key, setting_data in favorite_settings.items():
+                        log_debug(f"Adding favorite setting: {setting_key}", "FAVORITES")
                         self.add_favorite_setting(setting_key, setting_data)
                 else:
                     # Show message when no favorites
@@ -1255,6 +1277,9 @@ class QuickSettingsTab(QWidget):
                     """)
                     no_favorites_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
                     self.favorites_group.layout().addWidget(no_favorites_label)
+                    log_debug("No favorites found, showing placeholder message", "FAVORITES")
+            else:
+                log_debug("Could not find main window or favorites manager", "FAVORITES")
     
     def add_favorite_setting(self, setting_key, setting_data):
         """Add a favorite setting to the quick settings."""
@@ -1356,10 +1381,34 @@ class QuickSettingsTab(QWidget):
     
     def remove_favorite_setting(self, setting_key):
         """Remove a setting from favorites."""
-        main_window = self.parent().parent().parent()
-        if hasattr(main_window, 'favorites_manager'):
+        log_debug(f"Removing favorite setting: {setting_key}", "FAVORITES")
+        
+        # Get main window's favorites manager - try multiple ways to find it
+        main_window = None
+        
+        # Try to get main window from parent hierarchy
+        current = self.parent()
+        while current and not hasattr(current, 'favorites_manager'):
+            current = current.parent()
+        
+        if current and hasattr(current, 'favorites_manager'):
+            main_window = current
+            log_debug("Found main window via parent hierarchy", "FAVORITES")
+        else:
+            # Try alternative approach - look for main window in application
+            from PyQt6.QtWidgets import QApplication
+            for widget in QApplication.allWidgets():
+                if hasattr(widget, 'favorites_manager'):
+                    main_window = widget
+                    log_debug("Found main window via QApplication", "FAVORITES")
+                    break
+        
+        if main_window and hasattr(main_window, 'favorites_manager'):
             main_window.favorites_manager.remove_favorite(setting_key)
+            log_debug(f"Removed favorite: {setting_key}", "FAVORITES")
             self.refresh_favorites()
+        else:
+            log_debug("Could not find main window or favorites manager", "FAVORITES")
 
 
 class GraphicsTab(QWidget):
@@ -3261,6 +3310,9 @@ class AdvancedTab(QWidget):
         # Display all settings initially
         self.display_settings(self.all_settings)
         
+        # Refresh star button states after loading
+        QTimer.singleShot(100, self.refresh_star_button_states)
+        
         self.results_label.setText(f"Showing {len(self.all_settings)} settings")
         self.status_label.setText("Ready")
     
@@ -3361,6 +3413,9 @@ class AdvancedTab(QWidget):
         # Update display
         self.clear_settings_display()
         self.display_settings(filtered_settings)
+        
+        # Refresh star button states after adding widgets
+        QTimer.singleShot(100, self.refresh_star_button_states)
         
         # Update results count
         count = len(filtered_settings)
@@ -3705,6 +3760,9 @@ class AdvancedTab(QWidget):
                 log_debug(f"Added to favorites: {setting_key}", "FAVORITES")
                 QMessageBox.information(self, "Added to Favorites", f"⭐ '{setting_data.get('name', setting_key)}' added to Favorites")
             
+            # Refresh the current Advanced tab to update star button states
+            self.refresh_advanced_tab()
+            
             # Refresh Quick Settings tab if it exists
             log_debug(f"Has quick_settings_tab: {hasattr(self.main_window, 'quick_settings_tab')}", "FAVORITES")
             if hasattr(self.main_window, 'quick_settings_tab'):
@@ -3714,6 +3772,101 @@ class AdvancedTab(QWidget):
                 log_debug("Quick Settings tab not found", "FAVORITES")
         else:
             log_debug("Favorites manager not found", "FAVORITES")
+    
+    def refresh_advanced_tab(self):
+        """Refresh the Advanced tab to update star button states."""
+        log_debug("Refreshing Advanced tab star button states", "FAVORITES")
+        
+        # Find all star buttons in the current tab and update their states
+        for widget in self.findChildren(QPushButton):
+            if widget.toolTip() and ("Add to Favorites" in widget.toolTip() or "Remove from Favorites" in widget.toolTip()):
+                # This is a star button, update its state
+                self.update_star_button_state(widget)
+    
+    def update_star_button_state(self, star_button):
+        """Update the visual state of a star button based on current favorite status."""
+        # Extract setting key from the button's parent widget
+        setting_widget = star_button.parent()
+        if not setting_widget:
+            return
+            
+        # Find the setting key by looking for the setting name label
+        setting_name_label = None
+        for child in setting_widget.findChildren(QLabel):
+            if child.text() and not child.text().startswith("★"):
+                setting_name_label = child
+                break
+        
+        if not setting_name_label:
+            return
+            
+        setting_name = setting_name_label.text()
+        
+        # Find the setting key by matching the name
+        setting_key = None
+        for key, data in self.config_manager.settings_database.items():
+            if data.get("name") == setting_name:
+                setting_key = key
+                break
+        
+        if not setting_key or not self.main_window or not hasattr(self.main_window, 'favorites_manager'):
+            return
+            
+        # Update the star button state
+        is_favorited = self.main_window.favorites_manager.is_favorite(setting_key)
+        
+        if is_favorited:
+            star_button.setText("★")
+            star_button.setStyleSheet("""
+                QPushButton {
+                    background: rgba(255, 193, 7, 0.2);
+                    border: 1px solid #ffc107;
+                    border-radius: 14px;
+                    color: #ffc107;
+                    font-size: 14px;
+                    font-weight: bold;
+                }
+                QPushButton:hover {
+                    background: rgba(255, 193, 7, 0.3);
+                    border: 1px solid #ffd700;
+                    color: #ffd700;
+                }
+                QPushButton:pressed {
+                    background: rgba(255, 193, 7, 0.4);
+                }
+            """)
+            star_button.setToolTip("Remove from Favorites")
+        else:
+            star_button.setText("☆")
+            star_button.setStyleSheet("""
+                QPushButton {
+                    background: transparent;
+                    border: 1px solid #666;
+                    border-radius: 14px;
+                    color: #888;
+                    font-size: 14px;
+                    font-weight: normal;
+                }
+                QPushButton:hover {
+                    background: rgba(255, 193, 7, 0.1);
+                    border: 1px solid #ffc107;
+                    color: #ffc107;
+                }
+                QPushButton:pressed {
+                    background: rgba(255, 193, 7, 0.2);
+                    color: #ffd700;
+                }
+            """)
+            star_button.setToolTip("Add to Favorites")
+    
+    def refresh_star_button_states(self):
+        """Refresh all star button states in the Advanced tab."""
+        log_debug("Refreshing star button states in Advanced tab", "FAVORITES")
+        
+        # Find all star buttons and update their states
+        for widget in self.findChildren(QPushButton):
+            if widget.toolTip() and ("Add to Favorites" in widget.toolTip() or "Remove from Favorites" in widget.toolTip()):
+                self.update_star_button_state(widget)
 
 
 class InputTab(QWidget):
