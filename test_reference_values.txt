@@ -1,0 +1,127 @@
+# Battlefield 6 Settings Reference - Test Values
+# Extracted from fresh profile after settings changes
+# Use this to verify FieldTuner is reading/writing correctly
+
+# =============================================================================
+# GRAPHICS SETTINGS
+# =============================================================================
+
+[GRAPHICS_MAIN]
+Performance_Preset = AUTO (PERFORMANCE)
+Graphics_Quality = AUTO
+World_Brightness = 42
+UI_Brightness = 54
+Sharpness = 53
+
+[GRAPHICS_DISPLAY]
+Fullscreen_Mode = BORDERLESS
+Fullscreen_Device = MONITOR 1 – LG SMA...
+Fullscreen_Resolution = 3440x1440
+Aspect_Ratio = AUTO
+Refresh_Rate = 240.085HZ
+Vertical_Sync = OFF
+HDR_Calibration = (Action/Link)
+
+# =============================================================================
+# CAMERA SETTINGS
+# =============================================================================
+
+[CAMERA_SETTINGS]
+Field_of_View = 93
+Vehicle_3rd_Person_Field_of_View = 78
+Weapon_Field_of_View = WIDE
+Weapon_Motion_Blur = 50
+World_Motion_Blur = 50
+Camera_Shake_Amount = 100
+Reduce_Sprint_Camera_Bobbing = OFF
+Chromatic_Aberration = ON
+Vignette = ON
+Film_Grain = ON
+
+# =============================================================================
+# INTERFACE AND HUD SETTINGS
+# =============================================================================
+
+[INTERFACE_HUD]
+Show_HUD = ON
+Infantry_HUD_Motion = ON
+Vehicle_HUD_Motion = ON
+
+# =============================================================================
+# EXPECTED CONFIG FILE MAPPINGS
+# =============================================================================
+# These are the likely config file keys that should correspond to these values
+# Test by checking if FieldTuner reads these correctly
+
+# Graphics Quality Settings
+GstRender.GraphicsQuality = AUTO
+GstRender.PerformancePreset = AUTO (PERFORMANCE)
+GstRender.WorldBrightness = 42
+GstRender.UIBrightness = 54
+GstRender.Sharpness = 53
+
+# Display Settings
+GstRender.FullscreenMode = BORDERLESS
+GstRender.FullscreenDevice = MONITOR 1 – LG SMA...
+GstRender.FullscreenResolution = 3440x1440
+GstRender.AspectRatio = AUTO
+GstRender.RefreshRate = 240.085HZ
+GstRender.VerticalSync = OFF
+
+# Camera Settings
+GstRender.FieldOfView = 93
+GstRender.Vehicle3rdPersonFieldOfView = 78
+GstRender.WeaponFieldOfView = WIDE
+GstRender.WeaponMotionBlur = 50
+GstRender.WorldMotionBlur = 50
+GstRender.CameraShakeAmount = 100
+GstRender.ReduceSprintCameraBobbing = OFF
+GstRender.ChromaticAberration = ON
+GstRender.Vignette = ON
+GstRender.FilmGrain = ON
+
+# Interface Settings
+GstRender.ShowHUD = ON
+GstRender.InfantryHUDMotion = ON
+GstRender.VehicleHUDMotion = ON
+
+# =============================================================================
+# TESTING CHECKLIST
+# =============================================================================
+# When testing FieldTuner, verify these values are correctly:
+
+# 1. LOADED VALUES (Does FieldTuner read the correct values?)
+#    - Field of View should show 93
+#    - Vehicle 3rd Person FOV should show 78
+#    - Weapon FOV should show WIDE
+#    - World Brightness should show 42
+#    - UI Brightness should show 54
+#    - Sharpness should show 53
+#    - All toggle switches should match ON/OFF states
+
+# 2. WRITTEN VALUES (Does FieldTuner save changes correctly?)
+#    - Change Field of View from 93 to 95, save, reload game
+#    - Change World Brightness from 42 to 50, save, reload game
+#    - Toggle Chromatic Aberration from ON to OFF, save, reload game
+#    - Verify changes persist in game after restart
+
+# 3. CHANGE TRACKING (Does the feedback system work?)
+#    - When changing Field of View from 93 to 95, should show:
+#      "Field Of View: 93 → 95"
+#    - When toggling Chromatic Aberration from ON to OFF, should show:
+#      "Chromatic Aberration: ON → OFF"
+
+# 4. BACKUP SYSTEM (Does backup/restore work?)
+#    - Create backup before making changes
+#    - Make several changes
+#    - Restore backup
+#    - Verify all values return to original state
+
+# =============================================================================
+# NOTES
+# =============================================================================
+# - These values represent a fresh Battlefield 6 profile with specific settings
+# - Use this as a baseline to test FieldTuner's accuracy
+# - If FieldTuner shows different values, investigate config file parsing
+# - Test both reading (loading) and writing (saving) functionality
+# - Verify the change tracking system shows correct old → new values

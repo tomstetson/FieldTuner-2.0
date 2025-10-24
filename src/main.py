@@ -2828,6 +2828,11 @@ class AdvancedTab(QWidget):
         """)
         layout.addWidget(self.status_label)
     
+    def showEvent(self, event):
+        """Refresh settings when tab becomes visible."""
+        super().showEvent(event)
+        self.load_settings()
+    
     def load_settings(self):
         """Load and display all settings from the database."""
         from settings_database import BF6_SETTINGS_DATABASE
@@ -2931,6 +2936,7 @@ class AdvancedTab(QWidget):
     def create_control_widget(self, setting_key, setting_data):
         """Create the appropriate control widget for a setting."""
         setting_type = setting_data.get("type", "string")
+        # Always get the most current value from config manager
         current_value = self.config_manager.get_setting(setting_key)
         
         if setting_type == "bool":
@@ -3781,6 +3787,11 @@ class InputTab(QWidget):
         layout.addWidget(combo)
         
         return widget
+    
+    def showEvent(self, event):
+        """Refresh settings when tab becomes visible."""
+        super().showEvent(event)
+        self.load_settings()
     
     def load_settings(self):
         """Load current settings from config."""

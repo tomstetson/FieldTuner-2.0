@@ -1,0 +1,110 @@
+{
+  "test_profile_reference": {
+    "description": "Battlefield 6 fresh profile settings for FieldTuner testing",
+    "extracted_from": "Screenshots of in-game settings after fresh profile creation",
+    "test_date": "2024",
+    "purpose": "Verify FieldTuner reads/writes config values correctly"
+  },
+  
+  "graphics_settings": {
+    "Performance_Preset": "AUTO (PERFORMANCE)",
+    "Graphics_Quality": "AUTO", 
+    "World_Brightness": 42,
+    "UI_Brightness": 54,
+    "Sharpness": 53
+  },
+  
+  "display_settings": {
+    "Fullscreen_Mode": "BORDERLESS",
+    "Fullscreen_Device": "MONITOR 1 – LG SMA...",
+    "Fullscreen_Resolution": "3440x1440",
+    "Aspect_Ratio": "AUTO",
+    "Refresh_Rate": "240.085HZ",
+    "Vertical_Sync": "OFF"
+  },
+  
+  "camera_settings": {
+    "Field_of_View": 93,
+    "Vehicle_3rd_Person_Field_of_View": 78,
+    "Weapon_Field_of_View": "WIDE",
+    "Weapon_Motion_Blur": 50,
+    "World_Motion_Blur": 50,
+    "Camera_Shake_Amount": 100,
+    "Reduce_Sprint_Camera_Bobbing": "OFF",
+    "Chromatic_Aberration": "ON",
+    "Vignette": "ON",
+    "Film_Grain": "ON"
+  },
+  
+  "interface_settings": {
+    "Show_HUD": "ON",
+    "Infantry_HUD_Motion": "ON", 
+    "Vehicle_HUD_Motion": "ON"
+  },
+  
+  "expected_config_keys": {
+    "GstRender.GraphicsQuality": "AUTO",
+    "GstRender.PerformancePreset": "AUTO (PERFORMANCE)",
+    "GstRender.WorldBrightness": 42,
+    "GstRender.UIBrightness": 54,
+    "GstRender.Sharpness": 53,
+    "GstRender.FullscreenMode": "BORDERLESS",
+    "GstRender.FullscreenResolution": "3440x1440",
+    "GstRender.AspectRatio": "AUTO",
+    "GstRender.RefreshRate": "240.085HZ",
+    "GstRender.VerticalSync": "OFF",
+    "GstRender.FieldOfView": 93,
+    "GstRender.Vehicle3rdPersonFieldOfView": 78,
+    "GstRender.WeaponFieldOfView": "WIDE",
+    "GstRender.WeaponMotionBlur": 50,
+    "GstRender.WorldMotionBlur": 50,
+    "GstRender.CameraShakeAmount": 100,
+    "GstRender.ReduceSprintCameraBobbing": "OFF",
+    "GstRender.ChromaticAberration": "ON",
+    "GstRender.Vignette": "ON",
+    "GstRender.FilmGrain": "ON",
+    "GstRender.ShowHUD": "ON",
+    "GstRender.InfantryHUDMotion": "ON",
+    "GstRender.VehicleHUDMotion": "ON"
+  },
+  
+  "testing_scenarios": [
+    {
+      "test_name": "Field of View Change",
+      "original_value": 93,
+      "new_value": 95,
+      "expected_feedback": "Field Of View: 93 → 95"
+    },
+    {
+      "test_name": "World Brightness Change", 
+      "original_value": 42,
+      "new_value": 50,
+      "expected_feedback": "World Brightness: 42 → 50"
+    },
+    {
+      "test_name": "Chromatic Aberration Toggle",
+      "original_value": "ON",
+      "new_value": "OFF", 
+      "expected_feedback": "Chromatic Aberration: ON → OFF"
+    },
+    {
+      "test_name": "Weapon Field of View Change",
+      "original_value": "WIDE",
+      "new_value": "NARROW",
+      "expected_feedback": "Weapon Field Of View: WIDE → NARROW"
+    }
+  ],
+  
+  "validation_checklist": [
+    "✓ FieldTuner loads and displays Field of View as 93",
+    "✓ FieldTuner loads and displays Vehicle 3rd Person FOV as 78", 
+    "✓ FieldTuner loads and displays Weapon FOV as WIDE",
+    "✓ FieldTuner loads and displays World Brightness as 42",
+    "✓ FieldTuner loads and displays UI Brightness as 54",
+    "✓ FieldTuner loads and displays Sharpness as 53",
+    "✓ All toggle switches match ON/OFF states from screenshots",
+    "✓ Change tracking shows correct old → new values",
+    "✓ Changes persist after saving and reloading game",
+    "✓ Backup system works correctly"
+  ]
+}
