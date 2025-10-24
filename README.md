@@ -4,18 +4,19 @@
 
 ![FieldTuner Logo](assets/scaled_icon.png)
 
-**A comprehensive, world-class tool for managing Battlefield 6 settings with an intuitive interface and powerful features.**
+**A professional-grade configuration tool for Battlefield 6 with an intuitive interface and powerful features.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![PyQt6](https://img.shields.io/badge/PyQt6-6.5+-green.svg)](https://pypi.org/project/PyQt6/)
 [![Windows](https://img.shields.io/badge/Windows-10%2F11-blue.svg)](https://www.microsoft.com/windows)
+[![Release](https://img.shields.io/badge/Release-V1.0-green.svg)](https://github.com/tomstetson/FieldTuner/releases)
 
 </div>
 
 ## 🎯 Overview
 
-FieldTuner is a professional-grade configuration tool designed specifically for Battlefield 6. It provides an intuitive, WeMod-inspired interface for managing all aspects of your game settings, from graphics optimization to advanced technical configurations.
+FieldTuner is a comprehensive configuration tool designed specifically for Battlefield 6. It provides an intuitive, WeMod-inspired interface for managing all aspects of your game settings, from graphics optimization to advanced technical configurations.
 
 ### ✨ Key Features
 
@@ -29,22 +30,24 @@ FieldTuner is a professional-grade configuration tool designed specifically for 
 
 ## 🚀 Quick Start
 
-### 📦 Portable Version (Recommended)
+### 📦 **Download & Run (Recommended)**
 
-1. **Download** the latest release from [Releases](https://github.com/tomstetson/fieldtuner/releases)
-2. **Extract** the ZIP file to any folder
-3. **Run** `Run_FieldTuner.bat` as administrator
+1. **Download** the latest release from [Releases](https://github.com/tomstetson/FieldTuner/releases)
+2. **Download** `FieldTuner-V1.0.exe` (~42MB)
+3. **Right-click** → "Run as administrator"
 4. **Start** configuring your Battlefield 6 settings!
 
-### 🔧 From Source Code
+> **Note**: No installation required! The executable is completely portable.
+
+### 🔧 **From Source Code**
 
 ```bash
 # Clone the repository
-git clone https://github.com/tomstetson/fieldtuner.git
-cd fieldtuner
+git clone https://github.com/tomstetson/FieldTuner.git
+cd FieldTuner
 
 # Install dependencies
-pip install -r requirements.txt
+pip install PyQt6
 
 # Run the application
 python src/main.py
@@ -70,34 +73,55 @@ python src/main.py
 
 ## 📁 Project Structure
 
-### Clean Organization
 ```
 FieldTuner/
 ├── 📁 src/                          # Main source code
-│   ├── main.py                      # Core application
+│   ├── main.py                      # Core application (4,300+ lines)
 │   ├── settings_database.py         # BF6 settings database
-│   └── backup_tab_clean.py          # Clean backup implementation
+│   └── debug.py                     # Debug utilities
 ├── 📁 assets/                       # Application assets
+│   ├── icon.ico                     # Application icon
+│   ├── logo.png                     # Professional logo
+│   └── scaled_icon.png              # GitHub logo
 ├── 📁 docs/                         # Documentation
 ├── 📁 tests/                        # Test suite
-├── 📁 installer/                    # Installation system
-└── 📁 releases/                     # Release packages
+├── 📁 dist/                         # Built executables
+├── 📁 releases/                     # Release packages
+├── 📄 build.py                      # Build script
+├── 📄 pyproject.toml                # Project configuration
+└── 📄 README.md                     # This file
 ```
 
-### Config File Locations
+## 🔧 System Requirements
+
+### **Minimum Requirements**
+- **OS**: Windows 10/11 (64-bit)
+- **RAM**: 4GB minimum
+- **Storage**: 50MB free space
+- **Battlefield 6**: Must be installed and run at least once
+
+### **Recommended Requirements**
+- **OS**: Windows 11 (64-bit)
+- **RAM**: 8GB or more
+- **Storage**: 100MB free space
+- **Battlefield 6**: Latest version
+
+## 📍 Config File Locations
+
 FieldTuner automatically detects config files in:
 - `%USERPROFILE%\Documents\Battlefield 6\settings\steam\PROFSAVE_profile`
 - `%USERPROFILE%\Documents\Battlefield 6\settings\PROFSAVE_profile`
 - `%USERPROFILE%\OneDrive\Documents\Battlefield 6\settings\steam\PROFSAVE_profile`
 
-### Data Storage
+## 💾 Data Storage
+
 - **Backups**: `%APPDATA%\FieldTuner\backups\`
 - **Logs**: `%APPDATA%\FieldTuner\logs\`
 - **Settings**: Portable data storage
 
 ## 🆘 Troubleshooting
 
-### Common Issues
+### **Common Issues**
 
 #### "Config file not found"
 - ✅ Make sure Battlefield 6 is installed
@@ -107,14 +131,13 @@ FieldTuner automatically detects config files in:
 #### "Permission denied"
 - ✅ Run FieldTuner as administrator
 - ✅ Ensure you have administrator privileges
-- ✅ Use the batch file launcher
 
 #### "Application won't start"
-- ✅ Check that all dependencies are installed
-- ✅ Verify Python version (3.11+)
+- ✅ Check Windows version compatibility
 - ✅ Use the portable executable version
+- ✅ Check antivirus software isn't blocking the executable
 
-### Debug Mode
+### **Debug Mode**
 1. Open the **Debug** tab in FieldTuner
 2. Check the real-time logs for error messages
 3. Look for specific error patterns
@@ -124,17 +147,17 @@ FieldTuner automatically detects config files in:
 
 We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
-### Development Setup
+### **Development Setup**
 ```bash
 # Clone the repository
-git clone https://github.com/tomstetson/fieldtuner.git
-cd fieldtuner
+git clone https://github.com/tomstetson/FieldTuner.git
+cd FieldTuner
 
-# Install development dependencies
-pip install -r requirements-dev.txt
+# Install dependencies
+pip install PyQt6
 
-# Install pre-commit hooks
-pre-commit install
+# Run the application
+python src/main.py
 
 # Run tests
 python -m pytest tests/ -v
@@ -142,10 +165,10 @@ python -m pytest tests/ -v
 
 ## 📚 Documentation
 
-- 📖 **[Installation Guide](docs/installation.md)** - Detailed installation instructions
-- 🏗️ **[Architecture](docs/architecture.md)** - System architecture overview
-- 🧪 **[Testing](docs/testing.md)** - Testing guidelines and procedures
-- 🔧 **[API Reference](docs/api-reference.md)** - Complete API documentation
+- 📖 **[Installation Guide](docs/README.md)** - Detailed setup instructions
+- 🧪 **[Testing Guide](docs/TESTING_LOG_SYSTEM.md)** - Testing and debugging
+- 🏗️ **[Project Structure](PROJECT_STRUCTURE.md)** - Code organization
+- 🤝 **[Contributing](CONTRIBUTING.md)** - How to contribute
 
 ## 🏆 Project Status
 
@@ -153,8 +176,9 @@ python -m pytest tests/ -v
 - ✅ **UI/UX** - Professional, WeMod-inspired design
 - ✅ **Backup System** - Robust backup and restore functionality
 - ✅ **Portable Build** - Self-contained executable ready
-- ✅ **Documentation** - Comprehensive guides and API docs
-- ✅ **Testing** - Full test coverage with automated CI/CD
+- ✅ **Documentation** - Comprehensive guides
+- ✅ **Testing** - Test coverage with automated testing
+- 🔄 **V1.0** - Initial release available
 
 ## 📄 License
 
@@ -162,7 +186,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **Nobody621** - For the idea
+- **Nobody621** - For the original idea
 - **PyQt6** - For the excellent GUI framework
 - **Python Community** - For the amazing ecosystem
 - **Cursor** - For the incredible AI-powered development experience
@@ -174,5 +198,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Created by Tom with Love from Cursor** ❤️
 
 *Making Battlefield 6 configuration as smooth as butter*
+
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/tomstetson/FieldTuner)
+[![Download](https://img.shields.io/badge/Download-Latest-green.svg)](https://github.com/tomstetson/FieldTuner/releases)
 
 </div>

@@ -13,8 +13,8 @@ Thank you for your interest in contributing to FieldTuner! This document provide
 1. Fork the repository
 2. Clone your fork:
    ```bash
-   git clone https://github.com/yourusername/fieldtuner.git
-   cd fieldtuner
+   git clone https://github.com/yourusername/FieldTuner.git
+   cd FieldTuner
    ```
 3. Install dependencies:
    ```bash
@@ -44,7 +44,7 @@ Use clear, descriptive commit messages:
 - `test: add or update tests`
 
 ### Pull Request Process
-1. Create a feature branch from `develop`
+1. Create a feature branch from `main`
 2. Make your changes
 3. Add tests for new functionality
 4. Ensure all tests pass
@@ -121,17 +121,16 @@ When requesting features:
 
 ### Building Executable
 ```bash
-# Simple build
-python build_simple.py
+# Build portable executable
+python build.py
 
-# Full build with all features
-python build/build_portable.py
+# The executable will be created in dist/FieldTuner.exe
 ```
 
 ### Release Process
-1. Update version numbers
+1. Update version numbers in `pyproject.toml`
 2. Update changelog
-3. Create release tag
+3. Create release tag: `git tag -a v1.x.x -m "Release v1.x.x"`
 4. Build and test executable
 5. Create GitHub release
 
