@@ -36,6 +36,9 @@ class DebugLogger(QObject):
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.log_file = self.logs_dir / f"fieldtuner_{timestamp}.log"
         
+        # Create dedicated testing log file
+        self.testing_log_file = self.logs_dir / "fieldtuner_testing.log"
+        
         # Setup logging configuration
         logging.basicConfig(
             level=logging.DEBUG,
@@ -49,18 +52,33 @@ class DebugLogger(QObject):
         self.logger = logging.getLogger('FieldTuner')
         self.logger.info("FieldTuner Debug System Initialized")
         self.logger.info("Created by Tom with Love from Cursor - Debug System Ready!")
+        
+        # Log to testing file
+        self.log_to_testing_file("FieldTuner Debug System Initialized")
+        self.log_to_testing_file("Created by Tom with Love from Cursor - Debug System Ready!")
+    
+    def log_to_testing_file(self, message):
+        """Log message to dedicated testing log file."""
+        try:
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            with open(self.testing_log_file, 'a', encoding='utf-8') as f:
+                f.write(f"{timestamp} - {message}\n")
+        except Exception as e:
+            print(f"Failed to write to testing log: {e}")
     
     def log_info(self, message, category="GENERAL"):
         """Log info message."""
         formatted_msg = f"[{category}] {message}"
         self.logger.info(formatted_msg)
         self.add_to_buffer("INFO", formatted_msg)
+        self.log_to_testing_file(f"INFO - {formatted_msg}")
     
     def log_warning(self, message, category="GENERAL"):
         """Log warning message."""
         formatted_msg = f"[{category}] {message}"
         self.logger.warning(formatted_msg)
         self.add_to_buffer("WARNING", formatted_msg)
+        self.log_to_testing_file(f"WARNING - {formatted_msg}")
     
     def log_error(self, message, category="GENERAL", exception=None):
         """Log error message with optional exception."""
@@ -72,6 +90,7 @@ class DebugLogger(QObject):
             self.logger.error(f"Traceback: {traceback.format_exc()}")
         
         self.add_to_buffer("ERROR", formatted_msg)
+        self.log_to_testing_file(f"ERROR - {formatted_msg}")
     
     def log_debug(self, message, category="GENERAL"):
         """Log debug message."""

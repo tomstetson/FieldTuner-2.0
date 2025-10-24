@@ -494,20 +494,27 @@ class ConfigManager:
             
             for line in lines:
                 line = line.strip()
-                if '=' in line and not line.startswith('#'):
-                    key, value = line.split('=', 1)
-                    key = key.strip()
-                    value = value.strip()
+                if not line or line.startswith('#'):
+                    continue
+                
+                # BF6 uses "key value" format (space-separated), not "key=value"
+                parts = line.split(None, 1)  # Split on whitespace, max 1 split
+                if len(parts) == 2:
+                    key, value = parts
                     
                     # Try to convert value to appropriate type
-                    if value.lower() in ['true', 'false']:
-                        config[key] = value.lower() == 'true'
+                    if value.lower() in ['true', '1', 'on', 'yes']:
+                        config[key] = True
+                    elif value.lower() in ['false', '0', 'off', 'no']:
+                        config[key] = False
                     elif value.isdigit():
                         config[key] = int(value)
-                    elif '.' in value and value.replace('.', '').isdigit():
+                    elif '.' in value and value.replace('.', '').replace('-', '').isdigit():
                         config[key] = float(value)
                     else:
                         config[key] = value
+                    
+                    log_debug(f"Parsed text setting: {key} = {config[key]}", "CONFIG")
             
             log_info(f"Parsed {len(config)} settings from text config", "CONFIG")
             return config
@@ -703,8 +710,8 @@ class PresetCard(QWidget):
     
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(8)
+        layout.setContentsMargins(24, 24, 24, 24)  # Better padding
+        layout.setSpacing(12)  # Better spacing
         
         # Icon and title
         header_layout = QHBoxLayout()
@@ -752,13 +759,20 @@ class PresetCard(QWidget):
         self.setStyleSheet("""
             PresetCard {
                 background-color: #2a2a2a;
-                border: 1px solid #444;
-                border-radius: 8px;
-                margin: 5px;
+                border: 2px solid #444;
+                border-radius: 12px;
+                margin: 8px;
+                min-width: 280px;
+                min-height: 200px;
             }
             PresetCard:hover {
-                border-color: #666;
+                border-color: #4a90e2;
                 background-color: #333;
+                transform: scale(1.02);
+            }
+            PresetCard:selected {
+                border-color: #4a90e2;
+                background-color: #1a3a5c;
             }
         """)
     
@@ -778,22 +792,24 @@ class QuickSettingsTab(QWidget):
     
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(12, 12, 12, 12)  # Reduced margins
-        layout.setSpacing(12)  # Reduced spacing
+        layout.setContentsMargins(20, 20, 20, 20)  # Better margins for breathing room
+        layout.setSpacing(20)  # Better spacing between sections
         
-        # Header
-        header = QLabel("Quick Settings")
+        # Header with better styling
+        header = QLabel("⚡ Quick Settings")
         header.setStyleSheet("""
-            font-size: 24px; 
+            font-size: 28px; 
             font-weight: bold; 
             color: #ffffff; 
-            margin-bottom: 10px;
+            margin-bottom: 16px;
+            padding: 8px 0px;
         """)
         layout.addWidget(header)
         
-        # Preset cards
+        # Preset cards with better spacing
         presets_layout = QHBoxLayout()
-        presets_layout.setSpacing(15)
+        presets_layout.setSpacing(20)
+        presets_layout.setContentsMargins(0, 0, 0, 0)
         
         self.preset_cards = {}
         for preset_key, preset_data in self.config_manager.optimal_settings.items():
@@ -915,7 +931,7 @@ class QuickSettingsTab(QWidget):
         # Connect signals
         self.resolution_scale.valueChanged.connect(self.on_scale_changed)
         
-        layout.addStretch()
+        # No bottom spacer needed - buttons are truly floating
     
     def create_professional_toggle(self, title, description):
         """Create a professional toggle switch widget with modern design."""
@@ -1120,16 +1136,17 @@ class GraphicsTab(QWidget):
     
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(6, 6, 6, 6)  # Minimal margins
-        layout.setSpacing(6)  # Minimal spacing
+        layout.setContentsMargins(20, 20, 20, 20)  # Better margins
+        layout.setSpacing(20)  # Better spacing between sections
         
-        # Header
-        header = QLabel("Graphics Settings")
+        # Header with better styling
+        header = QLabel("🎨 Graphics Settings")
         header.setStyleSheet("""
-            font-size: 18px; 
+            font-size: 28px; 
             font-weight: bold; 
             color: #ffffff; 
-            margin-bottom: 4px;
+            margin-bottom: 16px;
+            padding: 8px 0px;
         """)
         layout.addWidget(header)
         
@@ -1138,15 +1155,16 @@ class GraphicsTab(QWidget):
         self.create_quality_group(layout)
         self.create_effects_group(layout)
         
-        layout.addStretch()
+        # No bottom spacer needed - buttons are truly floating
     
     def create_display_group(self, parent_layout):
         """Create display settings group."""
-        group = QGroupBox("Display Settings")
+        group = QGroupBox("🖥️ Display Settings")
         group.setStyleSheet(self.get_group_style())
         
         layout = QFormLayout()
-        layout.setSpacing(8)
+        layout.setSpacing(12)
+        layout.setContentsMargins(16, 16, 16, 16)
         
         # Fullscreen mode
         self.fullscreen_mode = QComboBox()
@@ -1167,11 +1185,12 @@ class GraphicsTab(QWidget):
     
     def create_quality_group(self, parent_layout):
         """Create quality settings group."""
-        group = QGroupBox("Quality Settings")
+        group = QGroupBox("⚙️ Quality Settings")
         group.setStyleSheet(self.get_group_style())
         
         layout = QFormLayout()
-        layout.setSpacing(8)
+        layout.setSpacing(12)
+        layout.setContentsMargins(16, 16, 16, 16)
         
         # Quality settings
         quality_settings = [
@@ -1196,11 +1215,12 @@ class GraphicsTab(QWidget):
     
     def create_effects_group(self, parent_layout):
         """Create effects settings group."""
-        group = QGroupBox("Visual Effects")
+        group = QGroupBox("✨ Visual Effects")
         group.setStyleSheet(self.get_group_style())
         
         layout = QFormLayout()
-        layout.setSpacing(8)
+        layout.setSpacing(12)
+        layout.setContentsMargins(16, 16, 16, 16)
         
         # Anti-aliasing
         self.aa_method = QComboBox()
@@ -1220,22 +1240,25 @@ class GraphicsTab(QWidget):
         parent_layout.addWidget(group)
     
     def get_group_style(self):
-        """Get group box styling."""
+        """Get group box styling with better visual hierarchy."""
         return """
             QGroupBox {
                 font-weight: bold;
                 color: #ffffff;
-                border: 1px solid #444;
-                border-radius: 8px;
-                margin-top: 15px;
-                padding-top: 15px;
+                border: 2px solid #4a90e2;
+                border-radius: 12px;
+                margin-top: 20px;
+                padding-top: 20px;
                 background-color: #2a2a2a;
+                font-size: 16px;
             }
             QGroupBox::title {
                 subcontrol-origin: margin;
-                left: 15px;
-                padding: 0 8px 0 8px;
-                font-size: 14px;
+                left: 20px;
+                padding: 0 12px 0 12px;
+                font-size: 16px;
+                font-weight: bold;
+                color: #4a90e2;
             }
         """
     
@@ -1246,10 +1269,11 @@ class GraphicsTab(QWidget):
                 background-color: #333;
                 color: white;
                 border: 2px solid #555;
-                padding: 8px 12px;
-                border-radius: 6px;
-                min-width: 120px;
-                font-size: 12px;
+                padding: 10px 16px;
+                border-radius: 8px;
+                min-width: 140px;
+                min-height: 20px;
+                font-size: 14px;
                 font-weight: 500;
             }
             QComboBox::drop-down {
@@ -1721,6 +1745,8 @@ class BackupTab(QWidget):
 
         backups_layout.addLayout(action_layout)
         layout.addWidget(backups_section)
+        
+        # No bottom spacer needed - buttons are truly floating
 
         # Connect signals
         self.backup_list.itemSelectionChanged.connect(self.update_backup_buttons)
@@ -2056,14 +2082,18 @@ class MainWindow(QMainWindow):
             )
             log_info("Startup message shown to user", "MAIN")
         
+        # Create action buttons
+        self.create_action_buttons()
+        
         log_info("FieldTuner MainWindow initialized successfully", "MAIN")
     
     def setup_ui(self):
         """Setup the super slick UI."""
         self.setWindowTitle("FieldTuner - Battlefield 6 Configuration Tool")
-        self.setGeometry(100, 100, 1200, 800)
-        self.setMinimumSize(1000, 600)  # Allow smaller minimum size
-        self.resize(1200, 800)  # Set default size but allow resizing
+        self.setGeometry(100, 100, 1400, 900)
+        self.setMinimumSize(1200, 800)  # Better minimum size for proper layout
+        self.setMaximumSize(2000, 1400)  # Prevent excessive scaling
+        self.resize(1400, 900)  # Better default size
         
         # Central widget with scrolling
         central_widget = QWidget()
@@ -2079,31 +2109,53 @@ class MainWindow(QMainWindow):
         # Set scroll area as central widget
         self.setCentralWidget(scroll_area)
         
-        # Main layout - tight spacing
+        # Main layout - responsive spacing with proper margins
         main_layout = QVBoxLayout(central_widget)
-        main_layout.setContentsMargins(4, 4, 4, 4)  # Minimal margins
-        main_layout.setSpacing(4)  # Minimal spacing
+        main_layout.setContentsMargins(16, 16, 16, 100)  # Bottom margin for floating buttons
+        main_layout.setSpacing(12)  # Better spacing between elements
+        main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)  # Align content to top
         
-        # Header with subtle gradient - compact height
+        # Store reference to main layout for later use
+        self.main_layout = main_layout
+        
+        # Header with responsive design
         header_widget = QWidget()
-        header_widget.setFixedHeight(40)  # More compact height
+        header_widget.setMinimumHeight(60)
+        header_widget.setMaximumHeight(80)
         header_widget.setStyleSheet("""
             QWidget {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
                     stop:0 #2a2a2a, stop:1 #333);
-                border: none;
+                border-radius: 8px;
+                margin: 0px 0px 8px 0px;
             }
         """)
         
         header_layout = QHBoxLayout(header_widget)
-        header_layout.setContentsMargins(12, 4, 12, 4)  # Minimal margins
+        header_layout.setContentsMargins(16, 12, 16, 12)
+        header_layout.setSpacing(16)
         
-        # Title
-        title_label = QLabel("🎮 FieldTuner")
+        # Logo and title with proper branding
+        logo_label = QLabel()
+        logo_label.setPixmap(QPixmap("assets/logo.png").scaled(40, 40, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
+        logo_label.setStyleSheet("""
+            background: transparent;
+            border: none;
+            padding: 0px;
+            margin: 0px;
+        """)
+        header_layout.addWidget(logo_label)
+        
+        # Title with proper branding
+        title_label = QLabel("FieldTuner")
         title_label.setStyleSheet("""
             font-size: 28px; 
             font-weight: bold; 
             color: #ffffff;
+            background: transparent;
+            border: none;
+            padding: 0px;
+            margin: 0px;
         """)
         header_layout.addWidget(title_label)
         
@@ -2111,10 +2163,9 @@ class MainWindow(QMainWindow):
         creator_label = QLabel("💝 Created by Tom with Love from Cursor")
         creator_label.setStyleSheet("""
             color: #ff6b35; 
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             font-style: italic;
-            margin-left: 15px;
             background-color: rgba(255, 107, 53, 0.1);
             padding: 4px 8px;
             border-radius: 12px;
@@ -2124,42 +2175,97 @@ class MainWindow(QMainWindow):
         
         header_layout.addStretch()
         
-        # Status info
+        # Status info container
+        status_container = QWidget()
+        status_container.setStyleSheet("""
+            QWidget {
+                background-color: rgba(76, 175, 80, 0.2);
+                border-radius: 20px;
+                border: 2px solid #4CAF50;
+                padding: 8px 16px;
+            }
+        """)
+        
+        status_layout = QHBoxLayout(status_container)
+        status_layout.setContentsMargins(0, 0, 0, 0)
+        status_layout.setSpacing(8)
+        
+        # Status text (non-clickable)
         self.status_label = QLabel()
         self.status_label.setStyleSheet("""
-            color: #cccccc; 
-            font-size: 12px;
-            background-color: rgba(0,0,0,0.3);
-            padding: 6px 12px;
-            border-radius: 15px;
+            QLabel {
+                color: #4CAF50; 
+                font-size: 12px;
+                font-weight: bold;
+                background: transparent;
+                border: none;
+                padding: 0px;
+                margin: 0px;
+            }
         """)
-        header_layout.addWidget(self.status_label)
+        status_layout.addWidget(self.status_label)
+        
+        # Clickable folder icon
+        self.folder_icon = QLabel("📁")
+        self.folder_icon.setStyleSheet("""
+            QLabel {
+                color: #4CAF50;
+                font-size: 16px;
+                background: transparent;
+                border: none;
+                padding: 4px;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+            QLabel:hover {
+                background-color: rgba(76, 175, 80, 0.4);
+                color: #ffffff;
+                transform: scale(1.1);
+            }
+            QLabel:pressed {
+                background-color: rgba(76, 175, 80, 0.6);
+                color: #ffffff;
+            }
+        """)
+        # Make only the folder icon clickable
+        self.folder_icon.mousePressEvent = self.open_config_directory
+        self.folder_icon.setToolTip("Click to open Battlefield 6 config directory")
+        status_layout.addWidget(self.folder_icon)
+        
+        header_layout.addWidget(status_container)
         
         main_layout.addWidget(header_widget)
         
-        # Tab widget
+        # Tab widget with responsive design
         self.tab_widget = QTabWidget()
         self.tab_widget.setStyleSheet("""
             QTabWidget::pane {
-                border: none;
+                border: 1px solid #444;
                 background-color: #1e1e1e;
+                border-radius: 8px;
+                margin-top: -1px;
             }
             QTabBar::tab {
                 background-color: #2a2a2a;
                 color: #ffffff;
-                padding: 12px 20px;
-                margin-right: 2px;
-                border-top-left-radius: 6px;
-                border-top-right-radius: 6px;
+                padding: 14px 24px;
+                margin-right: 3px;
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
                 font-size: 14px;
                 font-weight: bold;
+                min-width: 120px;
             }
             QTabBar::tab:selected {
                 background-color: #4a90e2;
                 color: white;
+                border-bottom: 2px solid #4a90e2;
             }
-            QTabBar::tab:hover {
+            QTabBar::tab:hover:!selected {
                 background-color: #444;
+            }
+            QTabBar::tab:first {
+                margin-left: 0px;
             }
         """)
         
@@ -2180,6 +2286,9 @@ class MainWindow(QMainWindow):
         self.tab_widget.addTab(self.code_tab, "💻 Code")
         self.tab_widget.addTab(self.backup_tab, "💾 Backups")
         self.tab_widget.addTab(self.debug_tab, "🐛 Debug")
+        
+        # Connect tab change signal
+        self.tab_widget.currentChanged.connect(self.on_tab_changed)
         
         main_layout.addWidget(self.tab_widget)
         
@@ -2224,66 +2333,11 @@ class MainWindow(QMainWindow):
         self.changes_feedback.hide()
         main_layout.addWidget(self.changes_feedback)
         
-        # Action buttons
-        button_widget = QWidget()
-        button_widget.setFixedHeight(70)
-        button_widget.setStyleSheet("background-color: #2a2a2a; border-top: 1px solid #444;")
-        
-        button_layout = QHBoxLayout(button_widget)
-        button_layout.setContentsMargins(30, 15, 30, 15)
-        button_layout.setSpacing(15)
-        
-        self.apply_btn = QPushButton("✅ Apply Changes")
-        self.apply_btn.setStyleSheet("""
-            QPushButton {
-                background-color: #4a90e2;
-                color: white;
-                border: none;
-                padding: 12px 24px;
-                font-size: 14px;
-                font-weight: bold;
-                border-radius: 6px;
-            }
-            QPushButton:hover {
-                background-color: #357abd;
-            }
-            QPushButton:pressed {
-                background-color: #2968a3;
-            }
-        """)
-        self.apply_btn.clicked.connect(self.apply_changes)
-        
         # Initialize changes tracking
         self.pending_changes = {}
         
         # Connect to tab change signals to track changes
         self.tab_widget.currentChanged.connect(self.on_tab_changed)
-        
-        self.reset_btn = QPushButton("🏭 Reset to Factory")
-        self.reset_btn.setStyleSheet("""
-            QPushButton {
-                background-color: #ff6b35;
-                color: white;
-                border: none;
-                padding: 12px 24px;
-                font-size: 14px;
-                font-weight: bold;
-                border-radius: 6px;
-            }
-            QPushButton:hover {
-                background-color: #e55a2b;
-            }
-            QPushButton:pressed {
-                background-color: #cc4a1f;
-            }
-        """)
-        self.reset_btn.clicked.connect(self.reset_to_factory)
-        
-        button_layout.addWidget(self.apply_btn)
-        button_layout.addWidget(self.reset_btn)
-        button_layout.addStretch()
-        
-        main_layout.addWidget(button_widget)
         
         # Status bar
         self.status_bar = QStatusBar()
@@ -2375,34 +2429,16 @@ class MainWindow(QMainWindow):
     
     def update_status(self):
         """Update status information with clear connection status."""
-        if self.config_manager.config_path:
-            file_size = self.config_manager.config_path.stat().st_size
-            settings_count = len(self.config_manager.config_data)
-            backup_count = len(list(self.config_manager.BACKUP_DIR.glob("*.bak"))) if self.config_manager.BACKUP_DIR.exists() else 0
-            
-            # Show clear connection status with clickable indicator
-            self.status_label.setText(f"✅ Config File Loaded • 📁 {self.config_manager.config_path.name} • 📊 {file_size:,} bytes • ⚙️ {settings_count} settings • 💾 {backup_count} backups")
-            self.status_label.setStyleSheet("""
-                color: #4CAF50; 
-                font-size: 12px;
-                background-color: rgba(76, 175, 80, 0.2);
-                padding: 6px 12px;
-                border-radius: 15px;
-                border: 1px solid #4CAF50;
-                cursor: pointer;
-            """)
-            # Make it clickable
-            self.status_label.mousePressEvent = self.open_config_directory
-        else:
-            self.status_label.setText("❌ No Battlefield 6 config file found - Please check your game installation")
-            self.status_label.setStyleSheet("""
-                color: #f44336; 
-                font-size: 12px;
-                background-color: rgba(244, 67, 54, 0.2);
-                padding: 6px 12px;
-                border-radius: 15px;
-                border: 1px solid #f44336;
-            """)
+        if hasattr(self, 'status_label'):
+            if self.config_manager.config_path:
+                file_size = self.config_manager.config_path.stat().st_size
+                settings_count = len(self.config_manager.config_data)
+                backup_count = len(list(self.config_manager.BACKUP_DIR.glob("*.bak"))) if self.config_manager.BACKUP_DIR.exists() else 0
+                
+                # Show clear connection status (text only, no styling)
+                self.status_label.setText(f"✅ Config File Loaded • {self.config_manager.config_path.name} • 📊 {file_size:,} bytes • ⚙️ {settings_count} settings • 💾 {backup_count} backups")
+            else:
+                self.status_label.setText("❌ No Battlefield 6 config file found - Please check your game installation")
     
     def apply_changes(self):
         """Apply configuration changes."""
@@ -2620,6 +2656,171 @@ class MainWindow(QMainWindow):
                 QMessageBox.warning(self, "Error", f"❌ Failed to open config directory: {str(e)}")
         else:
             QMessageBox.warning(self, "No Config", "❌ No Battlefield 6 config file found!")
+    
+    
+    def create_action_buttons(self):
+        """Create floating action buttons that persist over all content."""
+        # Create floating buttons container as a child of MainWindow
+        self.floating_buttons = QWidget(self)
+        self.floating_buttons.setFixedHeight(80)  # Slightly taller for better touch targets
+        self.floating_buttons.setStyleSheet("""
+            QWidget {
+                background-color: #2a2a2a;
+                border-top: 3px solid #4a90e2;
+                border-radius: 12px 12px 0 0;
+                box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+            }
+        """)
+        
+        button_layout = QHBoxLayout(self.floating_buttons)
+        button_layout.setContentsMargins(24, 18, 24, 18)  # Better padding
+        button_layout.setSpacing(20)  # Better spacing between buttons
+        
+        # Apply Changes button
+        self.apply_btn = QPushButton("✅ Apply Changes")
+        self.apply_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #4a90e2;
+                color: white;
+                border: none;
+                padding: 14px 28px;
+                font-size: 16px;
+                font-weight: bold;
+                border-radius: 8px;
+                min-width: 140px;
+                min-height: 20px;
+            }
+            QPushButton:hover {
+                background-color: #357abd;
+                transform: scale(1.02);
+            }
+            QPushButton:pressed {
+                background-color: #2c5aa0;
+                transform: scale(0.98);
+            }
+            QPushButton:disabled {
+                background-color: #666;
+                color: #999;
+            }
+        """)
+        self.apply_btn.clicked.connect(self.apply_changes)
+        button_layout.addWidget(self.apply_btn)
+        
+        # Reset to Factory button
+        self.reset_btn = QPushButton("🔄 Reset to Factory")
+        self.reset_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #ff6b35;
+                color: white;
+                border: none;
+                padding: 14px 28px;
+                font-size: 16px;
+                font-weight: bold;
+                border-radius: 8px;
+                min-width: 160px;
+                min-height: 20px;
+            }
+            QPushButton:hover {
+                background-color: #e55a2b;
+                transform: scale(1.02);
+            }
+            QPushButton:pressed {
+                background-color: #cc4a1f;
+                transform: scale(0.98);
+            }
+        """)
+        self.reset_btn.clicked.connect(self.reset_to_factory)
+        button_layout.addWidget(self.reset_btn)
+        
+        button_layout.addStretch()
+        
+        # Position the floating buttons at the bottom of the main window
+        self.position_floating_buttons()
+        
+        # Show the floating buttons
+        self.floating_buttons.show()
+        log_info("Floating action buttons created successfully", "MAIN")
+    
+    def position_floating_buttons(self):
+        """Position the floating buttons at the bottom of the main window."""
+        if hasattr(self, 'floating_buttons'):
+            # Get the main window geometry
+            main_rect = self.geometry()
+            
+            # Position at the bottom of the main window
+            x = 0
+            y = main_rect.height() - self.floating_buttons.height()
+            width = main_rect.width()
+            height = self.floating_buttons.height()
+            
+            self.floating_buttons.setGeometry(x, y, width, height)
+            self.floating_buttons.raise_()  # Bring to front
+    
+    def resizeEvent(self, event):
+        """Handle window resize to reposition floating elements and scale UI."""
+        super().resizeEvent(event)
+        self.position_floating_buttons()
+        self.scale_ui_elements()
+    
+    def scale_ui_elements(self):
+        """Scale UI elements based on window size for better responsiveness."""
+        # Get current window size
+        width = self.width()
+        height = self.height()
+        
+        # Calculate scaling factor based on window size
+        base_width = 1200
+        base_height = 800
+        scale_factor = min(width / base_width, height / base_height, 1.0)
+        scale_factor = max(scale_factor, 0.8)  # Minimum scale of 0.8
+        
+        # Update tab widget font size based on scale
+        if hasattr(self, 'tab_widget'):
+            font_size = max(12, int(14 * scale_factor))
+            self.tab_widget.setStyleSheet(f"""
+                QTabWidget::pane {{
+                    border: 1px solid #444;
+                    background-color: #1e1e1e;
+                    border-radius: 8px;
+                    margin-top: -1px;
+                }}
+                QTabBar::tab {{
+                    background-color: #2a2a2a;
+                    color: #ffffff;
+                    padding: {int(14 * scale_factor)}px {int(24 * scale_factor)}px;
+                    margin-right: 3px;
+                    border-top-left-radius: 8px;
+                    border-top-right-radius: 8px;
+                    font-size: {font_size}px;
+                    font-weight: bold;
+                    min-width: {int(120 * scale_factor)}px;
+                }}
+                QTabBar::tab:selected {{
+                    background-color: #4a90e2;
+                    color: white;
+                    border-bottom: 2px solid #4a90e2;
+                }}
+                QTabBar::tab:hover:!selected {{
+                    background-color: #444;
+                }}
+                QTabBar::tab:first {{
+                    margin-left: 0px;
+                }}
+            """)
+    
+    def on_tab_changed(self, index):
+        """Handle tab changes to update UI elements."""
+        # Update changes feedback when switching tabs
+        self.update_changes_feedback()
+        
+        # Show/hide floating action buttons based on tab
+        # Hide on Code and Debug tabs (read-only)
+        if hasattr(self, 'floating_buttons'):
+            if index in [4, 6]:  # Code and Debug tabs
+                self.floating_buttons.hide()
+            else:
+                self.floating_buttons.show()
+                self.position_floating_buttons()  # Ensure proper positioning
 
 
 class AdvancedTab(QWidget):
@@ -2635,20 +2836,17 @@ class AdvancedTab(QWidget):
     def setup_ui(self):
         """Setup the advanced settings UI with clean search and display."""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(8, 8, 8, 8)
-        layout.setSpacing(8)
+        layout.setContentsMargins(20, 20, 20, 20)  # Better margins
+        layout.setSpacing(20)  # Better spacing
         
-        # Header
+        # Header with better styling
         header = QLabel("⚙️ Advanced Settings")
         header.setStyleSheet("""
-            font-size: 18px;
+            font-size: 28px;
             font-weight: bold;
             color: #ffffff;
-            margin-bottom: 8px;
-            padding: 8px;
-            background-color: #2a2a2a;
-            border-radius: 4px;
-            border: 1px solid #444;
+            margin-bottom: 16px;
+            padding: 12px 0px;
         """)
         layout.addWidget(header)
         
@@ -2752,6 +2950,8 @@ class AdvancedTab(QWidget):
         self.settings_layout.setContentsMargins(8, 8, 8, 8)
         self.settings_layout.setSpacing(8)
         
+        # No bottom spacer needed - buttons are truly floating
+        
         self.settings_scroll.setWidget(self.settings_widget)
         layout.addWidget(self.settings_scroll)
         
@@ -2820,28 +3020,57 @@ class AdvancedTab(QWidget):
             if not settings:
                 continue
                 
-            # Category header
+            # Category header - more compact, especially for single settings
+            is_single_setting = len(settings) == 1
             category_group = QGroupBox(f"📁 {category_name} ({len(settings)} settings)")
-            category_group.setStyleSheet("""
-                QGroupBox {
-                    font-weight: bold;
-                    color: #ffffff;
-                    border: 2px solid #4a90e2;
-                    border-radius: 8px;
-                    margin-top: 8px;
-                    padding-top: 12px;
-                    background-color: #2a2a2a;
-                }
-                QGroupBox::title {
-                    subcontrol-origin: margin;
-                    left: 12px;
-                    padding: 0 8px 0 8px;
-                    font-size: 14px;
-                }
-            """)
+            
+            # Different styling for single vs multiple settings
+            if is_single_setting:
+                category_group.setStyleSheet("""
+                    QGroupBox {
+                        font-weight: bold;
+                        color: #ffffff;
+                        border: 1px solid #4a90e2;
+                        border-radius: 4px;
+                        margin-top: 2px;
+                        padding-top: 4px;
+                        background-color: #2a2a2a;
+                        max-height: 80px;
+                    }
+                    QGroupBox::title {
+                        subcontrol-origin: margin;
+                        left: 6px;
+                        padding: 0 4px 0 4px;
+                        font-size: 11px;
+                    }
+                """)
+            else:
+                category_group.setStyleSheet("""
+                    QGroupBox {
+                        font-weight: bold;
+                        color: #ffffff;
+                        border: 1px solid #4a90e2;
+                        border-radius: 6px;
+                        margin-top: 4px;
+                        padding-top: 8px;
+                        background-color: #2a2a2a;
+                        max-height: 200px;
+                    }
+                    QGroupBox::title {
+                        subcontrol-origin: margin;
+                        left: 8px;
+                        padding: 0 6px 0 6px;
+                        font-size: 12px;
+                    }
+                """)
             
             category_layout = QVBoxLayout(category_group)
-            category_layout.setSpacing(6)
+            if is_single_setting:
+                category_layout.setContentsMargins(4, 4, 4, 4)  # Very tight margins for single settings
+                category_layout.setSpacing(2)  # Very tight spacing
+            else:
+                category_layout.setContentsMargins(8, 8, 8, 8)  # Tighter margins
+                category_layout.setSpacing(4)  # Tighter spacing
             
             # Add settings for this category
             for setting_key, setting_data in sorted(settings, key=lambda x: x[1].get("name", "")):
@@ -2899,14 +3128,14 @@ class AdvancedTab(QWidget):
         widget.setStyleSheet("""
             QWidget {
                 background-color: #333;
-                border-radius: 6px;
-                padding: 10px;
-                margin: 2px;
+                border-radius: 4px;
+                padding: 6px;
+                margin: 1px;
             }
         """)
         
         layout = QHBoxLayout(widget)
-        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setContentsMargins(6, 6, 6, 6)  # Tighter margins
         
         # Setting name and description
         info_layout = QVBoxLayout()
@@ -2915,14 +3144,14 @@ class AdvancedTab(QWidget):
         name_label.setStyleSheet("""
             font-weight: bold;
             color: #ffffff;
-            font-size: 14px;
+            font-size: 12px;
         """)
         info_layout.addWidget(name_label)
         
         desc_label = QLabel(setting_data.get("description", ""))
         desc_label.setStyleSheet("""
             color: #cccccc;
-            font-size: 12px;
+            font-size: 10px;
         """)
         desc_label.setWordWrap(True)
         info_layout.addWidget(desc_label)
@@ -3141,20 +3370,17 @@ class InputTab(QWidget):
     def setup_ui(self):
         """Setup the input settings UI."""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(6, 6, 6, 6)  # Minimal margins
-        layout.setSpacing(6)  # Minimal spacing
+        layout.setContentsMargins(20, 20, 20, 20)  # Better margins
+        layout.setSpacing(20)  # Better spacing
         
-        # Header
+        # Header with better styling
         header = QLabel("🎮 Input Settings")
         header.setStyleSheet("""
-            font-size: 18px;
+            font-size: 28px;
             font-weight: bold;
             color: #ffffff;
-            margin-bottom: 8px;
-            padding: 8px;
-            background-color: #2a2a2a;
-            border-radius: 4px;
-            border: 1px solid #444;
+            margin-bottom: 16px;
+            padding: 12px 0px;
         """)
         layout.addWidget(header)
         
@@ -3192,6 +3418,8 @@ class InputTab(QWidget):
         self.create_controller_section()
         self.create_accessibility_section()
         self.create_advanced_section()
+        
+        # No bottom spacer needed - buttons are truly floating
         
         scroll_area.setWidget(self.content_widget)
         layout.addWidget(scroll_area)
