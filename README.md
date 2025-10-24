@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![FieldTuner Logo](assets/logo.png)
+![FieldTuner Logo](assets/scaled_icon.png)
 
 **A comprehensive, world-class tool for managing Battlefield 6 settings with an intuitive interface and powerful features.**
 
