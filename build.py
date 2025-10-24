@@ -12,17 +12,21 @@ from pathlib import Path
 
 def main():
     """Build the FieldTuner portable executable."""
-    print("🚀 Building FieldTuner...")
+    print("Building FieldTuner...")
     
     # Clean previous builds
-    if Path("dist").exists():
-        shutil.rmtree("dist")
-    if Path("build").exists():
-        shutil.rmtree("build")
+    try:
+        if Path("dist").exists():
+            shutil.rmtree("dist")
+        if Path("build").exists():
+            shutil.rmtree("build")
+    except PermissionError:
+        print("Warning: Could not clean previous builds (files may be in use)")
+        print("Continuing with build...")
     
     # Build command
     cmd = [
-        "pyinstaller",
+        "python", "-m", "PyInstaller",
         "--onefile",
         "--windowed",
         "--name=FieldTuner",
@@ -35,11 +39,11 @@ def main():
     
     try:
         result = subprocess.run(cmd, check=True, capture_output=True, text=True)
-        print("✅ Build successful!")
-        print(f"📁 Executable: dist/FieldTuner.exe")
+        print("Build successful!")
+        print(f"Executable: dist/FieldTuner.exe")
         return True
     except subprocess.CalledProcessError as e:
-        print(f"❌ Build failed: {e}")
+        print(f"Build failed: {e}")
         print(f"Error output: {e.stderr}")
         return False
 

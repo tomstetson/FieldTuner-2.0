@@ -519,37 +519,6 @@ class ConfigManager:
     def _parse_config_data(self, data):
         """Legacy method - redirects to binary parser."""
         return self._parse_binary_config(data)
-            'GstInput.InvertYAxis': {'type': 'int', 'default': 0},
-            'GstInput.ADSMouseSensitivity': {'type': 'float', 'default': 0.7},
-        }
-        
-        # For now, return default values for known settings
-        # This prevents the parsing error while maintaining functionality
-        for setting_name, setting_info in known_settings.items():
-            config[setting_name] = setting_info['default']
-        
-        # Add some additional common settings with defaults
-        additional_settings = {
-            'GstRender.FullscreenMode': 2,
-            'GstRender.FutureFrameRendering': 1,
-            'GstRender.FrameRateLimiterEnable': 0,
-            'GstRender.MotionBlurWeapon': 25.0,
-            'GstRender.WeaponDOF': 0,
-            'GstRender.VolumetricQuality': 0,
-            'GstRender.ScreenSpaceReflections': 0,
-            'GstRender.RaytracingAmbientOcclusion': 0,
-            'GstRender.AMDIntelAntiAliasing': 1,
-            'GstRender.NvidiaAntiAliasing': 1,
-            'GstRender.FieldOfViewScaleHip': 1,
-            'GstRender.FieldOfViewScaleADS': 0,
-            'GstRender.PerformanceMode': 1,
-            'GstRender.OverallGraphicsQuality': 1,
-            'GstRender.UndergrowthQuality': 1,
-        }
-        
-        config.update(additional_settings)
-        
-        return config
     
     def _create_backup(self, custom_name=None):
         """Create a backup of the original config file."""
@@ -2955,7 +2924,11 @@ class AdvancedTab(QWidget):
             # SpinBox for integer values
             spinbox = QSpinBox()
             spinbox.setRange(*setting_data.get("range", [0, 100]))
-            spinbox.setValue(int(current_value) if current_value is not None else setting_data.get("default", 0))
+            try:
+                value = int(current_value) if current_value and str(current_value).strip() else setting_data.get("default", 0)
+            except (ValueError, TypeError):
+                value = setting_data.get("default", 0)
+            spinbox.setValue(value)
             spinbox.valueChanged.connect(lambda value, key=setting_key: self.update_setting(key, value))
             spinbox.setStyleSheet("""
                 QSpinBox {
@@ -2981,7 +2954,11 @@ class AdvancedTab(QWidget):
             # DoubleSpinBox for float values
             spinbox = QDoubleSpinBox()
             spinbox.setRange(*setting_data.get("range", [0.0, 100.0]))
-            spinbox.setValue(float(current_value) if current_value is not None else setting_data.get("default", 0.0))
+            try:
+                value = float(current_value) if current_value and str(current_value).strip() else setting_data.get("default", 0.0)
+            except (ValueError, TypeError):
+                value = setting_data.get("default", 0.0)
+            spinbox.setValue(value)
             spinbox.setDecimals(2)
             spinbox.valueChanged.connect(lambda value, key=setting_key: self.update_setting(key, value))
             spinbox.setStyleSheet("""
