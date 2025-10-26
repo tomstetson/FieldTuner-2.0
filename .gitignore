@@ -175,6 +175,10 @@ dist/
 *.bat
 *.log
 
+# User-specific configs
+FT_2.0_BF6_Profile/
+FT_2.0_BF6_Profile/backups/
+
 # Python cache (already in standard section above, but ensuring it's covered)
 __pycache__/
 *.py[cod]
