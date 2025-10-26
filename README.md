@@ -1,4 +1,4 @@
-# FieldTuner - Battlefield 6 Configuration Tool
+# FieldTuner V2.0 - Battlefield 6 Configuration Tool
 
 <div align="center">
 
@@ -10,7 +10,9 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![PyQt6](https://img.shields.io/badge/PyQt6-6.5+-green.svg)](https://pypi.org/project/PyQt6/)
 [![Windows](https://img.shields.io/badge/Windows-10%2F11-blue.svg)](https://www.microsoft.com/windows)
-[![Release](https://img.shields.io/badge/Release-V1.0-green.svg)](https://github.com/tomstetson/FieldTuner/releases)
+[![Release](https://img.shields.io/badge/Release-V2.0-green.svg)](https://github.com/sneakytom/FieldTuner/releases)
+[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](https://github.com/sneakytom/FieldTuner/actions)
+[![Code Quality](https://img.shields.io/badge/Code%20Quality-A%2B-brightgreen.svg)](https://github.com/sneakytom/FieldTuner)
 
 </div>
 
@@ -20,20 +22,23 @@ FieldTuner is a comprehensive configuration tool designed specifically for Battl
 
 ### ✨ Key Features
 
-- 🎮 **Automatic Config Detection** - Finds your BF6 config files automatically
-- ⚡ **Quick Settings Presets** - 5 optimized presets for different playstyles
-- 🖥️ **Graphics Management** - Comprehensive graphics settings control
-- 💾 **Smart Backup System** - Automatic backups with easy restoration
-- 🔧 **Advanced Settings** - Technical settings with user-friendly descriptions
-- 🐛 **Debug Tools** - Real-time logging and troubleshooting
+- 🎮 **Enhanced Config Detection** - Auto-detect + manual profile selection
+- ⚡ **Optimized Quick Settings** - 3 performance presets with modern UI
+- 🖥️ **Modular Graphics Management** - Separate tab for graphics settings
+- 💾 **Bulletproof Backup System** - Enhanced backup with validation
+- 🔧 **Advanced Settings** - Technical settings with search and favorites
+- 🐛 **Real-time Debug Tools** - Comprehensive logging and troubleshooting
 - 🚀 **Portable Design** - No installation required, runs anywhere
+- ⚙️ **User Preferences** - Customizable application settings
+- ⭐ **Favorites System** - Save and manage favorite settings
+- 🎯 **Profile Selector** - Manual profile selection when auto-detect fails
 
 ## 🚀 Quick Start
 
 ### 📦 **Download & Run (Recommended)**
 
-1. **Download** the latest release from [Releases](https://github.com/tomstetson/FieldTuner/releases)
-2. **Download** `FieldTuner-V1.0.exe` (~42MB)
+1. **Download** the latest release from [Releases](https://github.com/sneakytom/FieldTuner/releases)
+2. **Download** `FieldTuner-2.0.exe` (~45MB)
 3. **Right-click** → "Run as administrator"
 4. **Start** configuring your Battlefield 6 settings!
 
@@ -43,7 +48,7 @@ FieldTuner is a comprehensive configuration tool designed specifically for Battl
 
 ```bash
 # Clone the repository
-git clone https://github.com/tomstetson/FieldTuner.git
+git clone https://github.com/sneakytom/FieldTuner.git
 cd FieldTuner
 
 # Install dependencies
@@ -150,7 +155,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 ### **Development Setup**
 ```bash
 # Clone the repository
-git clone https://github.com/tomstetson/FieldTuner.git
+git clone https://github.com/sneakytom/FieldTuner.git
 cd FieldTuner
 
 # Install dependencies
@@ -178,7 +183,7 @@ python -m pytest tests/ -v
 - ✅ **Portable Build** - Self-contained executable ready
 - ✅ **Documentation** - Comprehensive guides
 - ✅ **Testing** - Test coverage with automated testing
-- 🔄 **V1.0** - Initial release available
+- 🔄 **V2.0** - Initial release available
 
 ## 📄 License
 
@@ -195,7 +200,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**Created by Tom with Love from Cursor** ❤️
+**Made with Love by SneakyTom** ❤️
 
 *Making Battlefield 6 configuration as smooth as butter*
 

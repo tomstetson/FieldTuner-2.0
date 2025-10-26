@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "fieldtuner"
-version = "1.0.0"
-description = "Battlefield 6 Configuration Tool - A comprehensive tool for managing BF6 settings"
+name = "fieldtuner-2.0"
+version = "2.0.0"
+description = "FieldTuner 2.0 - Battlefield 6 Configuration Tool - A comprehensive tool for managing BF6 settings"
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
@@ -46,7 +46,7 @@ Issues = "https://github.com/tomstetson/fieldtuner/issues"
 Documentation = "https://github.com/tomstetson/fieldtuner#readme"
 
 [project.scripts]
-fieldtuner = "src.main:main"
+fieldtuner-2.0 = "src.main:main"
 
 [tool.setuptools.packages.find]
 where = ["."]

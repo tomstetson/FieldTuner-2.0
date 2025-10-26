@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-FieldTuner Debug System
-Comprehensive logging and debugging for FieldTuner application
+FieldTuner 2.0 Debug System
+Comprehensive logging and debugging for FieldTuner 2.0 application
 """
 
 import sys
@@ -11,6 +11,7 @@ import traceback
 import json
 from datetime import datetime
 from pathlib import Path
+from core.path_config import path_config
 from PyQt6.QtWidgets import QApplication, QMessageBox
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -29,15 +30,15 @@ class DebugLogger(QObject):
     def setup_logging(self):
         """Setup comprehensive logging system."""
         # Create logs directory
-        self.logs_dir = Path.home() / "AppData" / "Roaming" / "FieldTuner" / "logs"
+        self.logs_dir = path_config.logs_dir
         self.logs_dir.mkdir(parents=True, exist_ok=True)
         
         # Create log filename with timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.log_file = self.logs_dir / f"fieldtuner_{timestamp}.log"
+        self.log_file = self.logs_dir / f"fieldtuner-2.0_{timestamp}.log"
         
         # Create dedicated testing log file
-        self.testing_log_file = self.logs_dir / "fieldtuner_testing.log"
+        self.testing_log_file = self.logs_dir / "fieldtuner-2.0_testing.log"
         
         # Setup logging configuration
         logging.basicConfig(
@@ -51,11 +52,11 @@ class DebugLogger(QObject):
         
         self.logger = logging.getLogger('FieldTuner')
         self.logger.info("FieldTuner Debug System Initialized")
-        self.logger.info("Created by Tom with Love from Cursor - Debug System Ready!")
+        self.logger.info("Made with Love by SneakyTom - Debug System Ready!")
         
         # Log to testing file
         self.log_to_testing_file("FieldTuner Debug System Initialized")
-        self.log_to_testing_file("Created by Tom with Love from Cursor - Debug System Ready!")
+        self.log_to_testing_file("Made with Love by SneakyTom - Debug System Ready!")
     
     def log_to_testing_file(self, message):
         """Log message to dedicated testing log file."""

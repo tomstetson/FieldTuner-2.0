@@ -1,177 +1,294 @@
 # Contributing to FieldTuner
 
-Thank you for your interest in contributing to FieldTuner! This document provides guidelines for contributing to the project.
+Thank you for your interest in contributing to FieldTuner! This document provides guidelines and information for contributors.
 
-## 🚀 Getting Started
+## 🚀 **Getting Started**
 
-### Prerequisites
+### **Prerequisites**
 - Python 3.11 or higher
+- PyQt6
 - Git
-- A GitHub account
+- A code editor (VS Code, PyCharm, etc.)
 
-### Development Setup
-1. Fork the repository
-2. Clone your fork:
+### **Development Setup**
+
+1. **Fork the repository**
    ```bash
-   git clone https://github.com/yourusername/FieldTuner.git
+   git fork https://github.com/sneakytom/FieldTuner.git
+   ```
+
+2. **Clone your fork**
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/FieldTuner.git
    cd FieldTuner
    ```
-3. Install dependencies:
+
+3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    pip install -r requirements-dev.txt
    ```
-4. Run the application:
+
+4. **Run the application**
    ```bash
-   python src/main.py
+   python src/main_v2.py
    ```
 
-## 📝 Development Guidelines
+## 🏗️ **Project Architecture**
 
-### Code Style
-- Follow PEP 8 Python style guidelines
-- Use type hints where appropriate
-- Write clear, descriptive variable and function names
-- Add docstrings to all functions and classes
-
-### Commit Messages
-Use clear, descriptive commit messages:
-- `feat: add new feature`
-- `fix: resolve bug`
-- `docs: update documentation`
-- `style: code formatting`
-- `refactor: code restructuring`
-- `test: add or update tests`
-
-### Pull Request Process
-1. Create a feature branch from `main`
-2. Make your changes
-3. Add tests for new functionality
-4. Ensure all tests pass
-5. Update documentation if needed
-6. Submit a pull request
-
-## 🧪 Testing
-
-### Running Tests
-```bash
-# Run all tests
-python -m pytest tests/ -v
-
-# Run specific test file
-python -m pytest tests/test_config_manager.py -v
-
-# Run with coverage
-python -m pytest tests/ --cov=src --cov-report=html
+### **Directory Structure**
+```
+FieldTuner/
+├── src/
+│   ├── core/           # Core business logic
+│   ├── ui/             # User interface
+│   ├── utils/          # Utility functions
+│   └── main_v2.py      # Main entry point
+├── tests/              # Test suite
+├── docs/               # Documentation
+└── assets/             # Static assets
 ```
 
-### Writing Tests
+### **Key Components**
+- **Core**: Business logic and data management
+- **UI**: User interface components and tabs
+- **Utils**: Utility functions and helpers
+- **Tests**: Comprehensive test suite
+
+## 📝 **Development Guidelines**
+
+### **Code Style**
+- Follow PEP 8 Python style guidelines
+- Use type hints where appropriate
+- Write clear, descriptive variable names
+- Add docstrings to all functions and classes
+
+### **Commit Messages**
+Use clear, descriptive commit messages:
+```
+feat: add new preset system
+fix: resolve profile detection issue
+docs: update README with new features
+```
+
+### **Pull Request Process**
+
+1. **Create a feature branch**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+2. **Make your changes**
+   - Write clean, well-documented code
+   - Add tests for new functionality
+   - Update documentation as needed
+
+3. **Test your changes**
+   ```bash
+   python -m pytest tests/
+   python src/main_v2.py  # Manual testing
+   ```
+
+4. **Submit a pull request**
+   - Provide a clear description of changes
+   - Reference any related issues
+   - Include screenshots for UI changes
+
+## 🧪 **Testing**
+
+### **Running Tests**
+```bash
+# Run all tests
+python -m pytest tests/
+
+# Run specific test file
+python -m pytest tests/test_config_manager.py
+
+# Run with coverage
+python -m pytest --cov=src tests/
+```
+
+### **Writing Tests**
 - Write tests for all new functionality
 - Use descriptive test names
 - Test both success and failure cases
 - Mock external dependencies
 
-## 🎨 UI/UX Guidelines
-
-### Design Principles
-- Follow WeMod-inspired design patterns
-- Maintain consistency with existing UI
-- Ensure accessibility
-- Test on different screen sizes
-
-### UI Components
-- Use consistent styling
-- Follow the established color scheme
-- Maintain proper spacing and alignment
-- Ensure responsive design
-
-## 🐛 Bug Reports
-
-When reporting bugs, please include:
-- Operating system and version
-- Python version
-- Steps to reproduce
-- Expected vs actual behavior
-- Screenshots if applicable
-- Log files from the Debug tab
-
-## ✨ Feature Requests
-
-When requesting features:
-- Describe the use case
-- Explain the expected behavior
-- Consider the impact on existing functionality
-- Provide mockups or examples if possible
-
-## 📚 Documentation
-
-### Code Documentation
-- Add docstrings to all functions and classes
-- Include type hints
-- Document complex algorithms
-- Update README for new features
-
-### User Documentation
-- Update user guides for new features
-- Add screenshots for UI changes
-- Update installation instructions
-- Maintain changelog
-
-## 🔧 Build and Release
-
-### Building Executable
-```bash
-# Build portable executable
-python build.py
-
-# The executable will be created in dist/FieldTuner.exe
+### **Test Structure**
+```python
+def test_feature_name():
+    """Test description."""
+    # Arrange
+    setup_test_data()
+    
+    # Act
+    result = function_under_test()
+    
+    # Assert
+    assert result == expected_value
 ```
 
-### Release Process
-1. Update version numbers in `pyproject.toml`
-2. Update changelog
-3. Create release tag: `git tag -a v1.x.x -m "Release v1.x.x"`
-4. Build and test executable
-5. Create GitHub release
+## 🎨 **UI Development**
 
-## 📋 Code Review Process
+### **Adding New Tabs**
+1. Create new tab file in `src/ui/tabs/`
+2. Follow the existing tab structure
+3. Add to `src/ui/tabs/__init__.py`
+4. Register in main window
 
-### For Contributors
-- Ensure your code follows the style guidelines
-- Add appropriate tests
+### **Component Guidelines**
+- Use the existing component system
+- Follow the design patterns
+- Add proper error handling
+- Include accessibility features
+
+## 📚 **Documentation**
+
+### **Code Documentation**
+- Add docstrings to all public functions
+- Include type hints
+- Document complex algorithms
+- Add inline comments for clarity
+
+### **User Documentation**
+- Update README.md for new features
+- Add screenshots for UI changes
+- Update installation instructions
+- Document configuration options
+
+## 🐛 **Bug Reports**
+
+### **Before Reporting**
+1. Check existing issues
+2. Test with latest version
+3. Gather relevant information
+
+### **Bug Report Template**
+```markdown
+**Bug Description**
+Clear description of the bug
+
+**Steps to Reproduce**
+1. Step 1
+2. Step 2
+3. Step 3
+
+**Expected Behavior**
+What should happen
+
+**Actual Behavior**
+What actually happens
+
+**Environment**
+- OS: Windows 10/11
+- Python Version: 3.11.x
+- FieldTuner Version: 2.0.x
+
+**Additional Context**
+Any other relevant information
+```
+
+## 💡 **Feature Requests**
+
+### **Before Requesting**
+1. Check existing feature requests
+2. Consider if it fits the project scope
+3. Think about implementation complexity
+
+### **Feature Request Template**
+```markdown
+**Feature Description**
+Clear description of the requested feature
+
+**Use Case**
+Why would this feature be useful?
+
+**Proposed Solution**
+How could this feature be implemented?
+
+**Alternatives**
+Other ways to achieve the same goal
+
+**Additional Context**
+Any other relevant information
+```
+
+## 🔧 **Development Tools**
+
+### **Recommended Tools**
+- **IDE**: VS Code with Python extension
+- **Version Control**: Git with GitHub Desktop
+- **Testing**: pytest
+- **Code Quality**: flake8, black
+- **Documentation**: Sphinx
+
+### **VS Code Extensions**
+- Python
+- PyQt6
+- GitLens
+- Python Docstring Generator
+- autoDocstring
+
+## 📋 **Code Review Process**
+
+### **For Contributors**
+- Respond to review feedback promptly
+- Make requested changes
+- Test changes thoroughly
 - Update documentation
-- Respond to review feedback
 
-### For Reviewers
-- Check code quality and style
-- Verify tests are adequate
-- Ensure documentation is updated
-- Test the changes locally
+### **For Reviewers**
+- Be constructive and helpful
+- Focus on code quality and functionality
+- Check for security issues
+- Verify tests and documentation
 
-## 🤝 Community Guidelines
+## 🎯 **Contribution Areas**
 
-### Be Respectful
-- Use welcoming and inclusive language
-- Be respectful of differing viewpoints
-- Focus on what's best for the community
-- Show empathy towards other community members
+### **High Priority**
+- Bug fixes
+- Performance improvements
+- Documentation updates
+- Test coverage improvements
 
-### Be Constructive
-- Provide helpful feedback
-- Suggest improvements
-- Share knowledge and experience
-- Help others learn and grow
+### **Medium Priority**
+- New features
+- UI/UX improvements
+- Code refactoring
+- Plugin system development
 
-## 📞 Getting Help
+### **Low Priority**
+- Advanced features
+- Experimental functionality
+- Nice-to-have improvements
 
-- GitHub Issues for bug reports and feature requests
-- GitHub Discussions for questions and general discussion
-- Pull requests for code contributions
+## 📞 **Getting Help**
 
-## 📄 License
+### **Communication Channels**
+- **GitHub Issues**: Bug reports and feature requests
+- **GitHub Discussions**: General questions and ideas
+- **Pull Requests**: Code contributions
+
+### **Response Times**
+- Bug reports: 1-3 days
+- Feature requests: 1-2 weeks
+- Pull requests: 3-7 days
+- General questions: 1-5 days
+
+## 📄 **License**
 
 By contributing to FieldTuner, you agree that your contributions will be licensed under the MIT License.
 
+## 🙏 **Recognition**
+
+Contributors will be recognized in:
+- README.md contributors section
+- Release notes
+- Project documentation
+- GitHub contributors page
+
+Thank you for contributing to FieldTuner! Your efforts help make Battlefield 6 configuration easier for everyone.
+
 ---
 
-Thank you for contributing to FieldTuner! 🎮
+**Made with ❤️ by the FieldTuner Community**

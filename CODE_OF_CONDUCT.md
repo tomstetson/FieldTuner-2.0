@@ -6,14 +6,14 @@ We are committed to providing a welcoming and inspiring community for all. We pl
 
 ## Our Standards
 
-### Positive Behavior
-- Using welcoming and inclusive language
-- Being respectful of differing viewpoints and experiences
-- Gracefully accepting constructive criticism
-- Focusing on what is best for the community
-- Showing empathy towards other community members
+### **Positive Behavior**
+- Use welcoming and inclusive language
+- Be respectful of differing viewpoints and experiences
+- Gracefully accept constructive criticism
+- Focus on what is best for the community
+- Show empathy towards other community members
 
-### Unacceptable Behavior
+### **Unacceptable Behavior**
 - The use of sexualized language or imagery
 - Trolling, insulting/derogatory comments, and personal or political attacks
 - Public or private harassment
@@ -32,14 +32,50 @@ This Code of Conduct applies both within project spaces and in public spaces whe
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at [INSERT EMAIL]. All complaints will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances. The project team is obligated to maintain confidentiality with regard to the reporter of an incident.
+### **Reporting Violations**
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at [contact email]. All complaints will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances.
+
+### **Consequences**
+The project team is obligated to maintain confidentiality with regard to the reporter of an incident. Further details of specific enforcement policies may be posted separately.
 
 Project maintainers who do not follow or enforce the Code of Conduct in good faith may face temporary or permanent repercussions as determined by other members of the project's leadership.
 
+## Community Guidelines
+
+### **Discussions**
+- Keep discussions focused on the project
+- Be constructive and helpful
+- Respect different opinions and approaches
+- Ask questions when you need clarification
+
+### **Issues and Pull Requests**
+- Provide clear, detailed descriptions
+- Be patient with maintainers and contributors
+- Follow the project's contribution guidelines
+- Test your changes thoroughly
+
+### **Code Reviews**
+- Be constructive and specific in feedback
+- Focus on the code, not the person
+- Explain the reasoning behind suggestions
+- Be open to learning from others
+
+## Getting Help
+
+If you have questions about this Code of Conduct or need to report a violation, please contact:
+
+- **Email**: [contact email]
+- **GitHub Issues**: Use the "Code of Conduct" label
+- **Discussions**: Use the "General" category
+
 ## Attribution
 
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4, available at https://www.contributor-covenant.org/version/1/4/code-of-conduct.html
+This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org), version 2.1, available at [https://www.contributor-covenant.org/version/2/1/code_of_conduct.html](https://www.contributor-covenant.org/version/2/1/code_of_conduct.html).
 
-[homepage]: https://www.contributor-covenant.org
+Community Impact Guidelines were inspired by [Mozilla's code of conduct enforcement ladder](https://github.com/mozilla/diversity).
 
-For answers to common questions about this code of conduct, see https://www.contributor-covenant.org/faq
+For answers to common questions about this code of conduct, see the FAQ at [https://www.contributor-covenant.org/faq](https://www.contributor-covenant.org/faq). Translations are available at [https://www.contributor-covenant.org/translations](https://www.contributor-covenant.org/translations).
+
+---
+
+**Made with ❤️ by the FieldTuner Community**

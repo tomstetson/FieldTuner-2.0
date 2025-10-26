@@ -27,10 +27,11 @@ class TestConfigManager:
         
         # Create a mock config file
         self.config_path.write_bytes(b"mock_config_data")
-        
+    
     def teardown_method(self):
         """Cleanup after each test method"""
-        shutil.rmtree(self.temp_dir)
+        if hasattr(self, 'temp_dir') and Path(self.temp_dir).exists():
+            shutil.rmtree(self.temp_dir, ignore_errors=True)
     
     def test_init_with_valid_config(self):
         """Test ConfigManager initialization with valid config"""
@@ -66,12 +67,16 @@ class TestConfigManager:
         with patch.object(ConfigManager, '_parse_config_data', return_value={}):
             manager = ConfigManager(self.config_path)
             
+            # Get initial backup count (should be 1 from automatic backup during init)
+            initial_backups = manager.list_backups()
+            initial_count = len(initial_backups)
+            
             # Create some test backups
             manager._create_backup("backup1")
             manager._create_backup("backup2")
             
             backups = manager.list_backups()
-            assert len(backups) == 2
+            assert len(backups) == initial_count + 2
             assert all(backup.endswith('.bak') for backup in backups)
     
     def test_save_config(self):
@@ -156,6 +161,10 @@ class TestConfigManagerIntegration:
         with patch.object(ConfigManager, '_parse_config_data', return_value={}):
             manager = ConfigManager(self.config_path)
             
+            # Get initial backup count (should be 1 from automatic backup during init)
+            initial_backups = manager.list_backups()
+            initial_count = len(initial_backups)
+            
             # Create multiple backups
             backup1 = manager._create_backup("backup1")
             backup2 = manager._create_backup("backup2")
@@ -168,4 +177,4 @@ class TestConfigManagerIntegration:
             
             # List backups
             backups = manager.list_backups()
-            assert len(backups) == 3
+            assert len(backups) == initial_count + 3

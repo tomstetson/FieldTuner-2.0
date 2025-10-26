@@ -123,7 +123,7 @@ celerybeat.pid
 .env
 .venv
 env/
-venv/
+venv/  # FieldTuner 2.0 virtual environment - DO NOT COMMIT
 ENV/
 env.bak/
 venv.bak/
@@ -166,13 +166,19 @@ cython_debug/
 .vscode/
 
 # FieldTuner specific
-releases/
+releases/*.exe
+releases/FieldTuner-*.exe
 temp/
 build/
 dist/
 *.exe
 *.bat
 *.log
+
+# Python cache (already in standard section above, but ensuring it's covered)
+__pycache__/
+*.py[cod]
+*.pyc
 
 # PyInstaller
 *.spec

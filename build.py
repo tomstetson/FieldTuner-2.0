@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FieldTuner Build Script
+FieldTuner 2.0 Build Script
 Builds a portable executable using PyInstaller with comprehensive error handling.
 """
 
@@ -46,15 +46,15 @@ def check_dependencies():
     return True
 
 def build_executable():
-    """Build the FieldTuner executable."""
-    print("Building FieldTuner executable...")
+    """Build the FieldTuner 2.0 executable."""
+    print("Building FieldTuner 2.0 executable...")
     
     # Build command
     cmd = [
         "python", "-m", "PyInstaller",
         "--onefile",
         "--windowed",
-        "--name=FieldTuner",
+        "--name=FieldTuner-2.0",
         "--icon=assets/icon.ico",
         "--add-data=assets;assets",
         "--clean",
@@ -77,7 +77,7 @@ def post_build_actions():
     """Perform post-build actions."""
     print("Post-build actions...")
     
-    exe_path = Path("dist/FieldTuner.exe")
+    exe_path = Path("dist/FieldTuner-2.0.exe")
     if exe_path.exists():
         size_mb = exe_path.stat().st_size / (1024 * 1024)
         print(f"Executable created: {exe_path} ({size_mb:.1f} MB)")
@@ -87,7 +87,7 @@ def post_build_actions():
         releases_dir.mkdir(exist_ok=True)
         
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        release_name = f"FieldTuner-{timestamp}.exe"
+        release_name = f"FieldTuner-2.0-{timestamp}.exe"
         release_path = releases_dir / release_name
         
         shutil.copy2(exe_path, release_path)
@@ -100,7 +100,7 @@ def post_build_actions():
 
 def main():
     """Main build process."""
-    print("FieldTuner Build Script")
+    print("FieldTuner 2.0 Build Script")
     print("=" * 50)
     
     start_time = datetime.now()
@@ -129,8 +129,8 @@ def main():
     
     print("=" * 50)
     print(f"Build completed successfully in {duration:.1f} seconds!")
-    print("Executable: dist/FieldTuner.exe")
-    print("Release: releases/FieldTuner-*.exe")
+    print("Executable: dist/FieldTuner-2.0.exe")
+    print("Release: releases/FieldTuner-2.0-*.exe")
     return True
 
 if __name__ == "__main__":

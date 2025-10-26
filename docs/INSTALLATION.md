@@ -1,11 +1,11 @@
-# FieldTuner Installation Guide
+# FieldTuner 2.0 Installation Guide
 
 ## 🚀 Quick Installation
 
 ### **Portable Version (Recommended)**
 
 1. **Download** the latest release from [GitHub Releases](https://github.com/tomstetson/FieldTuner/releases)
-2. **Download** `FieldTuner-V1.0.exe` (~42MB)
+2. **Download** `FieldTuner-2.0.exe` (~42MB)
 3. **Right-click** → "Run as administrator"
 4. **Start** configuring your Battlefield 6 settings!
 
@@ -30,7 +30,7 @@
 ### **Method 1: Portable Executable (Recommended)**
 
 1. **Download** from [GitHub Releases](https://github.com/tomstetson/FieldTuner/releases)
-2. **Save** `FieldTuner-V1.0.exe` to your desired location
+2. **Save** `FieldTuner-2.0.exe` to your desired location
 3. **Right-click** the executable
 4. **Select** "Run as administrator"
 5. **Start** using FieldTuner!
@@ -95,7 +95,7 @@ FieldTuner automatically detects config files in:
 ## 📁 File Locations
 
 ### **Application Files**
-- **Executable**: Wherever you saved `FieldTuner-V1.0.exe`
+- **Executable**: Wherever you saved `FieldTuner-2.0.exe`
 - **Source Code**: `FieldTuner/src/main.py` (if running from source)
 
 ### **Data Storage**
@@ -183,7 +183,7 @@ If you encounter issues during installation:
 
 ---
 
-**FieldTuner Installation Guide** - Getting you up and running quickly! 🚀
+**FieldTuner 2.0 Installation Guide** - Getting you up and running quickly! 🚀
 
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/tomstetson/FieldTuner)
 [![Download](https://img.shields.io/badge/Download-Latest-green.svg)](https://github.com/tomstetson/FieldTuner/releases)
