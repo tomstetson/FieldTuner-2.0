@@ -58,7 +58,7 @@ def build_executable():
         "--icon=assets/icon.ico",
         "--add-data=assets;assets",
         "--clean",
-        "src/main.py"
+        "src/main_v2.py"
     ]
     
     print(f"Running: {' '.join(cmd)}")

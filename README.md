@@ -48,14 +48,14 @@ FieldTuner is a comprehensive configuration tool designed specifically for Battl
 
 ```bash
 # Clone the repository
-git clone https://github.com/sneakytom/FieldTuner.git
-cd FieldTuner
+git clone https://github.com/tomstetson/FieldTuner-2.0.git
+cd FieldTuner-2.0
 
 # Install dependencies
-pip install PyQt6
+pip install -r requirements.txt
 
 # Run the application
-python src/main.py
+python src/main_v2.py
 ```
 
 ## 🎮 Quick Settings Presets
@@ -79,23 +79,70 @@ python src/main.py
 ## 📁 Project Structure
 
 ```
-FieldTuner/
+FieldTuner 2.0/
 ├── 📁 src/                          # Main source code
-│   ├── main.py                      # Core application (4,300+ lines)
-│   ├── settings_database.py         # BF6 settings database
-│   └── debug.py                     # Debug utilities
+│   ├── main_v2.py                   # Main entry point (V2.0)
+│   ├── main.py                      # Legacy entry point
+│   ├── debug.py                     # Debug utilities
+│   ├── 📁 core/                     # Core functionality
+│   │   ├── config_manager.py        # Config file management
+│   │   ├── favorites_manager.py     # Favorites system
+│   │   ├── app_state.py             # Application state
+│   │   ├── user_preferences.py      # User settings
+│   │   ├── bf6_features.py          # BF6-specific features
+│   │   └── path_config.py           # Path configuration
+│   ├── 📁 ui/                       # User interface
+│   │   ├── main_window.py           # Main window
+│   │   ├── theme.py                 # Theme management
+│   │   ├── error_handler.py         # Error handling
+│   │   ├── 📁 tabs/                 # Application tabs
+│   │   │   ├── quick_settings_v2.py # Quick settings (V2.0)
+│   │   │   ├── bf6_features.py      # BF6 features
+│   │   │   ├── graphics.py          # Graphics settings
+│   │   │   ├── input.py             # Input settings
+│   │   │   ├── advanced.py          # Advanced settings
+│   │   │   ├── backup.py            # Backup management
+│   │   │   ├── code_view.py         # Raw config view
+│   │   │   ├── debug.py             # Debug info
+│   │   │   └── preferences.py        # User preferences
+│   │   └── 📁 components/            # UI components
+│   │       └── custom_widgets.py    # Custom widgets
+│   └── 📁 utils/                     # Utilities
+│       ├── config_parser.py         # Config parsing
+│       ├── file_utils.py            # File operations
+│       ├── process_utils.py         # Process monitoring
+│       └── performance.py           # Performance utilities
 ├── 📁 assets/                       # Application assets
 │   ├── icon.ico                     # Application icon
 │   ├── logo.png                     # Professional logo
 │   └── scaled_icon.png              # GitHub logo
 ├── 📁 docs/                         # Documentation
+│   ├── INSTALLATION.md              # Installation guide
+│   ├── development-notes/            # Development notes
+│   └── ...                          # Additional docs
 ├── 📁 tests/                        # Test suite
-├── 📁 dist/                         # Built executables
+├── 📁 dist/                         # Built executables (gitignored)
 ├── 📁 releases/                     # Release packages
 ├── 📄 build.py                      # Build script
 ├── 📄 pyproject.toml                # Project configuration
+├── 📄 requirements.txt               # Python dependencies
 └── 📄 README.md                     # This file
 ```
+
+## 🔧 Tech Stack
+
+FieldTuner 2.0 is built with modern Python technologies:
+
+- **Python 3.11+** - Modern Python with type hints and performance improvements
+- **PyQt6 6.5+** - Cross-platform GUI framework for professional interfaces
+- **psutil 5.9+** - Process and system utilities for runtime monitoring
+- **PyInstaller** - Packaging tool for creating portable executables
+
+### **Architecture Highlights**
+- **Modular Design** - Separated core, UI, and utilities for maintainability
+- **Type Hints** - Full type annotations for better code quality
+- **Error Handling** - Comprehensive error handling and logging
+- **Portable Builds** - Single-file executable with no installation needed
 
 ## 🔧 System Requirements
 
@@ -155,22 +202,34 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 ### **Development Setup**
 ```bash
 # Clone the repository
-git clone https://github.com/sneakytom/FieldTuner.git
-cd FieldTuner
+git clone https://github.com/tomstetson/FieldTuner-2.0.git
+cd FieldTuner-2.0
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
 
 # Install dependencies
-pip install PyQt6
+pip install -r requirements.txt
 
 # Run the application
-python src/main.py
+python src/main_v2.py
 
 # Run tests
 python -m pytest tests/ -v
+
+# Build executable
+python build.py
 ```
 
 ## 📚 Documentation
 
-- 📖 **[Installation Guide](docs/README.md)** - Detailed setup instructions
+- 🚀 **[Quick Start Guide](QUICK_START.md)** - Get started in minutes
+- 📖 **[User Guide](USER_GUIDE.md)** - Complete user documentation
+- 🔧 **[Installation Guide](docs/INSTALLATION.md)** - Detailed setup instructions
 - 🧪 **[Testing Guide](docs/TESTING_LOG_SYSTEM.md)** - Testing and debugging
 - 🏗️ **[Project Structure](PROJECT_STRUCTURE.md)** - Code organization
 - 🤝 **[Contributing](CONTRIBUTING.md)** - How to contribute
